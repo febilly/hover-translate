@@ -3,6 +3,7 @@ export const TOOLTIP_CLASS = "custom-tooltip";
 export const NOTIFICATION_TOOLTIP_CLASS = "custom-notification-tooltip";
 export const TOOLTIP_WORD_CLASS = "custom-tooltip-word";
 export const TOOLTIP_SELECTED_WORD_CLASS = "custom-tooltip-word-selected";
+export const TOOLTIP_SAVED_WORD_CLASS = "custom-tooltip-word-saved";
 export const RATING_CARD_CLASS = "custom-rating-card";
 
 // YouTube classes
@@ -19,6 +20,8 @@ export const PLAYER_CONTROLS_LAYER = "ytPlayerControlsContainerHost";
 // Data attributes keys
 export const DATA_ATTRIBUTES = {
   INDEX: "data-index",
+  // On a word that is part of a saved word/phrase: that saved text (lower case).
+  SAVED: "data-ht-saved",
   // On a caption window without visible text, which lets the pointer through (styles.css).
   NO_VISIBLE_TEXT: "data-ht-no-visible-text",
 };

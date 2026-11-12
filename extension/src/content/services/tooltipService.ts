@@ -16,6 +16,7 @@ import { MIN_CACHED_TRANSLATIONS, MIN_SAVED_WORDS } from "../../common/ratingPro
 import { TranslationCore } from "../core/translationCore";
 import { StorageService } from "../../common/services/storageService.ts";
 import { state } from "../state/stateManager.ts";
+import { savedWords } from "../state/savedWords.ts";
 import { TranslationCacheData, TranslationData } from "../../common/types/translations.ts";
 import { TranslatorErrorCode, isTranslatorError } from "../../common/translators/translatorError.ts";
 import { sendMessageToBackground } from "../../common/services/messagingService.ts";
@@ -63,6 +64,8 @@ export class TooltipService {
   private selectedWordsNodes: Set<HTMLElement>;
   private firstSelectedWordNode: HTMLElement | null;
   private lastSelectedWordNode: HTMLElement | null;
+  /** The word a multi-selection started on; see `updateSelectedWords`. */
+  private anchorWordNode: HTMLElement | null = null;
 
   /**
    * The translation request started for the selection that is currently on
@@ -407,19 +410,25 @@ export class TooltipService {
     return lines.join("\n") || undefined;
   }
 
+  /**
+   * The selection runs from the word the multi-selection started on (the
+   * anchor) to the word the pointer is on now, in either direction — not over
+   * every word the pointer passed, so moving back shrinks it.
+   */
   private updateSelectedWords = (selectedNode: HTMLElement) => {
     const selectedWordIndex = this.getWordIndex(selectedNode);
     if (selectedWordIndex === null) return;
 
-    const firstWordIndex = this.firstSelectedWordNode ? this.getWordIndex(this.firstSelectedWordNode) : null;
-    if (firstWordIndex === null || selectedWordIndex < firstWordIndex) {
-      this.firstSelectedWordNode = selectedNode;
+    const anchorIndex = this.anchorWordNode?.isConnected ? this.getWordIndex(this.anchorWordNode) : null;
+    if (!this.anchorWordNode || anchorIndex === null || this.selectedWordsNodes.size === 0) {
+      this.anchorWordNode = selectedNode;
     }
 
-    const lastWordIndex = this.lastSelectedWordNode ? this.getWordIndex(this.lastSelectedWordNode) : null;
-    if (lastWordIndex === null || selectedWordIndex > lastWordIndex) {
-      this.lastSelectedWordNode = selectedNode;
-    }
+    const anchorWordIndex = this.anchorWordNode ? this.getWordIndex(this.anchorWordNode) ?? selectedWordIndex : selectedWordIndex;
+    const anchorNode = this.anchorWordNode ?? selectedNode;
+    const forward = anchorWordIndex <= selectedWordIndex;
+    this.firstSelectedWordNode = forward ? anchorNode : selectedNode;
+    this.lastSelectedWordNode = forward ? selectedNode : anchorNode;
 
     this.applySelectionRange();
   };
@@ -475,6 +484,7 @@ export class TooltipService {
     this.cancelPendingTooltip();
     this.firstSelectedWordNode = null;
     this.lastSelectedWordNode = null;
+    this.anchorWordNode = null;
     this.activeTranslation = null;
     this.selectedWordsNodes.forEach((word) => word.classList.remove(TOOLTIP_SELECTED_WORD_CLASS));
     this.selectedWordsNodes.clear();
@@ -489,9 +499,7 @@ export class TooltipService {
   public handleWordMouseEnter = (event: PointerEvent) => {
     const target = event.target as AbortableElement;
     if (target.classList.contains(TOOLTIP_WORD_CLASS)) {
-      if (!this.selectedWordsNodes.has(target)) {
-        this.updateSelectedWords(target);
-      }
+      this.updateSelectedWords(target);
 
       // The selection is highlighted straight away; only the request waits.
       this.cancelPendingTooltip();
@@ -651,6 +659,22 @@ export class TooltipService {
     if (captionWindow && !this.hadFailure && savedCount >= MIN_SAVED_WORDS) {
       this.ratingPromptService.offer(captionWindow);
     }
+  };
+
+  /** Unsaves a highlighted word/phrase: every dictionary entry with this original text. */
+  public removeSavedTranslation = async (wordNode: HTMLElement, savedText: string) => {
+    const player = wordNode.closest<HTMLElement>(`.${VIDEO_PLAYER}`);
+
+    try {
+      await savedWords.remove(savedText);
+    } catch (error) {
+      console.error("Removing the saved translation failed", error);
+      this.hadFailure = true;
+      this.showNotificationTooltip(chrome.i18n.getMessage("saveFailed"), player, true);
+      return;
+    }
+
+    this.showNotificationTooltip(chrome.i18n.getMessage("translationRemoved"), player);
   };
 
   public saveOriginalTextToClipboard = async (wordNode: HTMLElement) => {

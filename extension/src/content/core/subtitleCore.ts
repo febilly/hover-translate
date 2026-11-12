@@ -1,9 +1,14 @@
-import { TOOLTIP_WORD_CLASS, CAPTION_SEGMENT, CAPTION_WINDOW, DATA_ATTRIBUTES } from "../consts/consts.ts";
+import { TOOLTIP_WORD_CLASS, TOOLTIP_SAVED_WORD_CLASS, CAPTION_SEGMENT, CAPTION_WINDOW, DATA_ATTRIBUTES } from "../consts/consts.ts";
 import { TooltipService } from "../services/tooltipService.ts";
 import { state } from "../state/stateManager.ts";
 import { CaptionWord, renderWord, splitIntoWords } from "../utils/wordSegmenter.ts";
 import { isShiftHeld } from "../utils/shiftKey.ts";
 import { findVisibleCaptionSegment } from "../utils/domUtils.ts";
+import { savedWords, savedKey } from "../state/savedWords.ts";
+import { trimEdgePunctuation } from "./translationCore.ts";
+
+/** The longest saved phrase looked for, in words. */
+const MAX_SAVED_PHRASE_WORDS = 12;
 
 export class SubtitleCore {
   /**
@@ -21,7 +26,47 @@ export class SubtitleCore {
 
   constructor(
     private readonly tooltipService: TooltipService
-  ) {}
+  ) {
+    savedWords.onChange(this.highlightSavedWords);
+  }
+
+  /**
+   * Marks the words that make up a saved word or phrase (longest match first,
+   * within one caption line), so they are drawn in yellow and a click on them
+   * unsaves the text. Runs again whenever the words or the saved set change.
+   */
+  public highlightSavedWords = (): void => {
+    document.querySelectorAll<HTMLElement>(`.${TOOLTIP_WORD_CLASS}`).forEach((word) => {
+      word.classList.remove(TOOLTIP_SAVED_WORD_CLASS);
+      word.removeAttribute(DATA_ATTRIBUTES.SAVED);
+    });
+    if (savedWords.size === 0) return;
+
+    document.querySelectorAll<HTMLElement>(`.${CAPTION_SEGMENT}`).forEach((segment) => {
+      const words = Array.from(segment.querySelectorAll<HTMLElement>(`.${TOOLTIP_WORD_CLASS}`));
+      let i = 0;
+      while (i < words.length) {
+        let matched = 0;
+        let key = "";
+        const longest = Math.min(MAX_SAVED_PHRASE_WORDS, words.length - i);
+        for (let length = longest; length >= 1; length--) {
+          const text = words.slice(i, i + length).map((w) => w.textContent ?? "").join("");
+          const candidate = trimEdgePunctuation(text.trim());
+          if (candidate && savedWords.has(candidate)) {
+            matched = length;
+            key = savedKey(candidate);
+            break;
+          }
+        }
+        if (matched === 0) { i++; continue; }
+        words.slice(i, i + matched).forEach((w) => {
+          w.classList.add(TOOLTIP_SAVED_WORD_CLASS);
+          w.setAttribute(DATA_ATTRIBUTES.SAVED, key);
+        });
+        i += matched;
+      }
+    });
+  };
   
   public setWordsIndexes = () => {
     const allWords = document.querySelectorAll(`.${TOOLTIP_WORD_CLASS}`);
@@ -30,6 +75,7 @@ export class SubtitleCore {
         word.setAttribute(DATA_ATTRIBUTES.INDEX, String(index));
       }
     });
+    this.highlightSavedWords();
   };
 
   /**
@@ -229,9 +275,16 @@ export class SubtitleCore {
       // nothing, so one rule for all.
       if (e.button === 0 && !e.ctrlKey && !isDrag && !isFarFromPress(e)) {
         switch (state.settings.leftClickAction) {
-        case "save-to-dictionary":
+        case "save-to-dictionary": {
+          // A highlighted (already saved) word: the click unsaves it.
+          const savedText = wordSpan.getAttribute(DATA_ATTRIBUTES.SAVED);
+          if (savedText) {
+            this.tooltipService.removeSavedTranslation(wordSpan, savedText);
+            break;
+          }
           this.tooltipService.saveTranslationToDictionary(wordSpan);
           break;
+        }
         case "copy-original":
           this.tooltipService.saveOriginalTextToClipboard(wordSpan);
           break;

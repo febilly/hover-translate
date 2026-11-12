@@ -13,6 +13,7 @@ import { BING_HOST, BING_ORIGIN } from "../common/translators/bing/bing.ts";
 import { sendMessageToBackground } from "../common/services/messagingService.ts";
 import { Settings } from "../common/types/settings.ts";
 import { state } from "./state/stateManager.ts";
+import { savedWords } from "./state/savedWords.ts";
 import { trackShiftKey } from "./utils/shiftKey.ts";
 
 let activeObserverService: MutationObserverService | null = null;
@@ -118,6 +119,7 @@ if (canHostPlayer()) {
   // singleton's own work, kept out of its constructor so that a frame stopping
   // here touches neither storage nor the page.
   state.init();
+  savedWords.init();
   // Once per frame, not per pipeline: the pipeline is rebuilt with the translator.
   trackShiftKey();
 

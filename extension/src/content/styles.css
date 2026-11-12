@@ -23,6 +23,11 @@
     background-color: #707070;
 }
 
+.custom-tooltip-word-saved {
+    color: #ffeb3b !important;
+    cursor: pointer;
+}
+
 .custom-tooltip-word-selected {
     background-color: #707070;
 }

@@ -5,6 +5,9 @@
   "description": {
     "message": "Learn languages on YouTube: hover over a subtitle word to see its translation, save it to your word list. Free, no account needed."
   },
+  "translationRemoved": {
+    "message": "Removed from saved words"
+  },
   "translationSaved": {
     "message": "Translation saved"
   },
