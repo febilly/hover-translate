@@ -93,6 +93,27 @@ test("Shift carries the selection across words, and the phrase is translated", a
   await expect(player.frame.locator(".custom-tooltip-word-selected")).toHaveText(["for ", "your ", "life"]);
 });
 
+test("Shift selects from the word it was pressed on to the word under the pointer, not every word passed", async ({ openPlayer }) => {
+  const player = await openPlayer();
+  await player.captions("run for your life");
+  const selected = player.frame.locator(".custom-tooltip-word-selected");
+
+  await player.word("for").hover();
+  await player.page.keyboard.down("Shift");
+  await player.word("your").hover();
+  await player.word("life").hover();
+  await expect(selected).toHaveText(["for ", "your ", "life"]);
+
+  // Back towards the start: the selection shrinks.
+  await player.word("your").hover();
+  await expect(selected).toHaveText(["for ", "your "]);
+
+  // Past the start, on the other side: the anchor stays, the words behind it go.
+  await player.word("run").hover();
+  await expect(selected).toHaveText(["run ", "for "]);
+  await player.page.keyboard.up("Shift");
+});
+
 test("punctuation at the edges of the selection is neither sent to the translator nor shown in its answer", async ({ openPlayer, network }) => {
   const player = await openPlayer();
   await player.captions("They live in a carpa.");

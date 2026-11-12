@@ -119,6 +119,35 @@ test("with \"copy the translation\" a click copies it instead of saving", async 
   expect(await storage.get("local", "savedTranslations")).toBeUndefined();
 });
 
+test("saved words and phrases are yellow; a click on one removes it from the dictionary", async ({ openPlayer, storage }) => {
+  const player = await openPlayer();
+  await player.captions("run for your life");
+  const saved = player.frame.locator(".custom-tooltip-word-saved");
+  await expect(saved).toHaveCount(0);
+
+  await player.word("run").click();
+  await expect.poll(() => savedWords(storage)).toEqual(["run"]);
+  await expect(saved).toHaveText(["run "]);
+
+  // A phrase, selected with Shift, is highlighted as a whole.
+  await player.word("your").hover();
+  await player.page.keyboard.down("Shift");
+  await player.word("life").click();
+  await player.page.keyboard.up("Shift");
+  await expect.poll(() => savedWords(storage)).toEqual(["your life", "run"]);
+  await expect(saved).toHaveText(["run ", "your ", "life"]);
+
+  // Clicking the highlighted phrase removes it and leaves "run".
+  await player.word("life").click();
+  await expect(player.notification).toHaveText("Removed from saved words");
+  await expect.poll(() => savedWords(storage)).toEqual(["run"]);
+  await expect(saved).toHaveText(["run "]);
+
+  // Highlighted again on a later caption with the same word.
+  await player.captions("we run away");
+  await expect(saved).toHaveText(["run "]);
+});
+
 test("right, middle and Ctrl clicks on a word save nothing", async ({ openPlayer, storage }) => {
   const player = await openPlayer();
   await player.captions("run for your life");
