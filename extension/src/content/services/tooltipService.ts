@@ -433,6 +433,19 @@ export class TooltipService {
     this.applySelectionRange();
   };
 
+  /** Selects the whole saved phrase `target` belongs to; false when it is not part of one. */
+  private selectSavedPhrase(target: HTMLElement): boolean {
+    const group = target.getAttribute(DATA_ATTRIBUTES.SAVED_GROUP);
+    if (group === null) return false;
+
+    const words = document.querySelectorAll<HTMLElement>(`[${DATA_ATTRIBUTES.SAVED_GROUP}="${group}"]`);
+    this.anchorWordNode = words[0];
+    this.firstSelectedWordNode = words[0];
+    this.lastSelectedWordNode = words[words.length - 1];
+    this.applySelectionRange();
+    return true;
+  }
+
   /**
    * Highlights every word between the two ends of the selection, dropping the
    * words that fell out of it. The range is resolved against the words currently
@@ -499,7 +512,12 @@ export class TooltipService {
   public handleWordMouseEnter = (event: PointerEvent) => {
     const target = event.target as AbortableElement;
     if (target.classList.contains(TOOLTIP_WORD_CLASS)) {
-      this.updateSelectedWords(target);
+      // A saved phrase is selected whole, unless Shift (or "always multiple
+      // selection") builds the selection from the anchor word instead.
+      const multiple = isShiftHeld(event) || state.settings.alwaysMultipleSelection;
+      if (multiple || !this.selectSavedPhrase(target)) {
+        this.updateSelectedWords(target);
+      }
 
       // The selection is highlighted straight away; only the request waits.
       this.cancelPendingTooltip();

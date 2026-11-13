@@ -22,6 +22,8 @@ export const DATA_ATTRIBUTES = {
   INDEX: "data-index",
   // On a word that is part of a saved word/phrase: that saved text (lower case).
   SAVED: "data-ht-saved",
+  // On the same words: one value per occurrence, so neighbouring saved phrases stay apart.
+  SAVED_GROUP: "data-ht-saved-group",
   // On a caption window without visible text, which lets the pointer through (styles.css).
   NO_VISIBLE_TEXT: "data-ht-no-visible-text",
 };

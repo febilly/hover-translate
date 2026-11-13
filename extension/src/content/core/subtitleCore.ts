@@ -39,8 +39,11 @@ export class SubtitleCore {
     document.querySelectorAll<HTMLElement>(`.${TOOLTIP_WORD_CLASS}`).forEach((word) => {
       word.classList.remove(TOOLTIP_SAVED_WORD_CLASS);
       word.removeAttribute(DATA_ATTRIBUTES.SAVED);
+      word.removeAttribute(DATA_ATTRIBUTES.SAVED_GROUP);
     });
     if (savedWords.size === 0) return;
+
+    let groupId = 0;
 
     document.querySelectorAll<HTMLElement>(`.${CAPTION_SEGMENT}`).forEach((segment) => {
       const words = Array.from(segment.querySelectorAll<HTMLElement>(`.${TOOLTIP_WORD_CLASS}`));
@@ -62,7 +65,9 @@ export class SubtitleCore {
         words.slice(i, i + matched).forEach((w) => {
           w.classList.add(TOOLTIP_SAVED_WORD_CLASS);
           w.setAttribute(DATA_ATTRIBUTES.SAVED, key);
+          w.setAttribute(DATA_ATTRIBUTES.SAVED_GROUP, String(groupId));
         });
+        groupId++;
         i += matched;
       }
     });

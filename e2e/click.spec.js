@@ -148,6 +148,34 @@ test("saved words and phrases are yellow; a click on one removes it from the dic
   await expect(saved).toHaveText(["run "]);
 });
 
+test("hovering a saved phrase selects and translates all of it; with Shift the selection is built from the anchor word", async ({ openPlayer, network }) => {
+  const player = await openPlayer();
+  network.translate("ru", "your life", "твоя жизнь");
+  await player.captions("run for your life");
+  const selected = player.frame.locator(".custom-tooltip-word-selected");
+
+  await player.word("your").hover();
+  await player.page.keyboard.down("Shift");
+  await player.word("life").click();
+  await player.page.keyboard.up("Shift");
+  await expect(player.frame.locator(".custom-tooltip-word-saved")).toHaveText(["your ", "life"]);
+
+  await player.moveAway();
+  await expect(selected).toHaveCount(0);
+
+  // Without Shift the phrase is taken whole, from either of its words.
+  await player.word("life").hover();
+  await expect(selected).toHaveText(["your ", "life"]);
+  await expect(player.tooltip).toHaveText("твоя жизнь");
+
+  // With Shift the usual range applies: only the word the pointer entered on.
+  await player.moveAway();
+  await player.page.keyboard.down("Shift");
+  await player.word("your").hover();
+  await expect(selected).toHaveText(["your "]);
+  await player.page.keyboard.up("Shift");
+});
+
 test("right, middle and Ctrl clicks on a word save nothing", async ({ openPlayer, storage }) => {
   const player = await openPlayer();
   await player.captions("run for your life");
