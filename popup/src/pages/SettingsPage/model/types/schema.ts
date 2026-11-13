@@ -9,6 +9,7 @@ export interface SettingsFormValues {
   leftClickAction: LeftClickAction;
   alwaysMultipleSelection: boolean;
   showNotifications: boolean;
+  fixCaptionPosition: boolean;
 }
 
 export interface Language {

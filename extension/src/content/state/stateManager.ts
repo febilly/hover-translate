@@ -1,5 +1,6 @@
 import { Settings, TooltipTheme } from "../../common/types/settings.ts";
 import { defaultSettings, defaultTooltipTheme } from "../../common/consts/defaultValues.ts";
+import { DATA_ATTRIBUTES } from "../consts/consts.ts";
 import { StorageService } from "../../common/services/storageService.ts";
 
 class StateManager {
@@ -31,11 +32,17 @@ class StateManager {
     this.checkStorageChanges();
   }
 
+  /** Stores the settings and applies the one that is a page-wide style. */
+  private setSettings(settings: Settings) {
+    this.settings = settings;
+    document.documentElement.toggleAttribute(DATA_ATTRIBUTES.FIXED_CAPTIONS, settings.fixCaptionPosition !== false);
+  }
+
   initializeSettings() {
     // A failed read leaves the defaults in place, which is the same outcome as an
     // empty storage — but without it the rejection had nowhere to go.
     this.storageService.get<Settings>("settings", "sync")
-      .then((settings) => settings ? this.settings = settings : this.settings = defaultSettings)
+      .then((settings) => this.setSettings(settings ?? defaultSettings))
       .catch((error) => console.error("Could not read the settings", error));
     this.storageService.get<TooltipTheme>("tooltipTheme", "sync")
       .then((tooltipTheme) => tooltipTheme ? this.tooltipTheme = tooltipTheme : this.tooltipTheme = defaultTooltipTheme)
@@ -46,7 +53,7 @@ class StateManager {
     chrome.storage.onChanged.addListener((changes, namespace) => {
       if (namespace === "sync") {
         if (changes.settings) {
-          this.settings = changes.settings.newValue as Settings;
+          this.setSettings(changes.settings.newValue as Settings);
         }
         if (changes.tooltipTheme) {
           this.tooltipTheme = changes.tooltipTheme.newValue as TooltipTheme;

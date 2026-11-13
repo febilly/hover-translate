@@ -624,6 +624,26 @@ export const SettingsForm: FC<SettingsFormProps> = ({
             </FormControl>
           )}
         />
+        <Controller
+          name="fixCaptionPosition"
+          control={control}
+          render={({ field }) => (
+            <FormControl fullWidth title={t("fields.fixCaptionPosition.tooltip")}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={field.value}
+                    onChange={(_, checked) => handleChangeSwitch("fixCaptionPosition", checked)}
+                  />
+                }
+                label={t("fields.fixCaptionPosition.label")}
+              />
+              <FormHelperText>
+                {t("fields.fixCaptionPosition.helperText")}
+              </FormHelperText>
+            </FormControl>
+          )}
+        />
         <ConfirmationModal
           trigger={(
             <Button

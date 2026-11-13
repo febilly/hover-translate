@@ -71,3 +71,15 @@
     border-radius: 4px;
     cursor: pointer;
 }
+
+/*
+ * "Keep captions in place": YouTube lifts the bottom captions when the pointer
+ * moves, to clear the control bar, which moves the words just as the viewer
+ * reaches for one. They stay at one height instead, above the control bar
+ * and the embedded player's seek slider (words under it get no hover). Not a window that was dragged (it has a `top`), nor a top one.
+ */
+html[data-ht-fixed-captions] .caption-window.ytp-caption-window-bottom:not([style^="top:"]):not([style*="; top:"]) {
+    bottom: calc(2% + 90px) !important;
+    margin-bottom: 0 !important;
+    transition: none !important;
+}

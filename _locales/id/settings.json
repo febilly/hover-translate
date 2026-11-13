@@ -50,6 +50,11 @@
       "label": "Tampilkan notifikasi",
       "tooltip": "Tampilkan notifikasi saat kata disimpan ke kamus atau disalin ke papan klip",
       "helperText": "Jika dinonaktifkan, tidak ada notifikasi saat kata disimpan atau disalin"
+    },
+    "fixCaptionPosition": {
+      "label": "Jaga posisi teks",
+      "tooltip": "Mencegah YouTube menaikkan teks saat penunjuk digerakkan",
+      "helperText": "Teks tetap di bagian bawah, tepat di atas bilah kemajuan, dan tidak melompat saat Anda memilih kata"
     }
   },
   "modals": {

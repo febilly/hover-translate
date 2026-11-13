@@ -50,6 +50,11 @@
       "label": "Hiện thông báo",
       "tooltip": "Hiện thông báo khi lưu từ vào sổ từ vựng hoặc sao chép vào bảng nhớ tạm",
       "helperText": "Khi tắt, sẽ không có thông báo nào khi bạn lưu hoặc sao chép từ"
+    },
+    "fixCaptionPosition": {
+      "label": "Giữ nguyên vị trí phụ đề",
+      "tooltip": "Ngăn YouTube đẩy phụ đề lên khi di chuyển con trỏ",
+      "helperText": "Phụ đề ở lại phía dưới, ngay trên thanh tiến trình, và không nhảy khi bạn chọn từ"
     }
   },
   "modals": {

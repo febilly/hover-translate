@@ -50,6 +50,11 @@
       "label": "Visa aviseringar",
       "tooltip": "Visa aviseringar när ord sparas som glosor eller kopieras till urklipp",
       "helperText": "När det här är avstängt visas inga aviseringar när ord sparas eller kopieras"
+    },
+    "fixCaptionPosition": {
+      "label": "Behåll undertexterna på plats",
+      "tooltip": "Hindrar YouTube från att flytta upp undertexterna när pekaren rör sig",
+      "helperText": "Undertexterna ligger kvar längst ned, strax ovanför förloppsindikatorn, och hoppar inte medan du väljer ett ord"
     }
   },
   "modals": {

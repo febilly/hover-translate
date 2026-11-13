@@ -55,6 +55,10 @@ export class SettingsMigrationsService {
         useDictionary: undefined,
       } as Settings;
     },
+    5: (oldSettings) => ({
+      ...oldSettings,
+      fixCaptionPosition: oldSettings.fixCaptionPosition ?? true,
+    }),
   };
 
   /*
@@ -101,6 +105,7 @@ export class SettingsMigrationsService {
    * carrying that field will be read as the version below it.
    */
   public inferVersion(settings: Settings): number {
+    if (settings.fixCaptionPosition !== undefined) return 5;
     if (settings.leftClickAction !== undefined) return 4;
     if (settings.showNotifications !== undefined) return 3;
     if (settings.translator !== undefined) return 2;

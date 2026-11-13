@@ -50,6 +50,11 @@
       "label": "Mostrar notificaciones",
       "tooltip": "Mostrar notificaciones al guardar palabras en el vocabulario o copiarlas al portapapeles",
       "helperText": "Si está desactivado, no se mostrarán notificaciones al guardar o copiar palabras"
+    },
+    "fixCaptionPosition": {
+      "label": "Mantener los subtítulos fijos",
+      "tooltip": "Evita que YouTube suba los subtítulos al mover el puntero",
+      "helperText": "Los subtítulos se quedan abajo, justo encima de la barra de progreso, y no saltan mientras eliges una palabra"
     }
   },
   "modals": {

@@ -111,6 +111,7 @@ describe("SettingsService: update", () => {
       alwaysMultipleSelection: false,
       showNotifications: true,
       leftClickAction: "copy-original",
+      fixCaptionPosition: true,
     });
     expect(fake.storage.sync.settingsVersion).toBe(SettingsService.SETTINGS_VERSION);
     expect(fake.storage.sync.tooltipTheme).toEqual({ ...defaultTooltipTheme, fontSize: "150%" });

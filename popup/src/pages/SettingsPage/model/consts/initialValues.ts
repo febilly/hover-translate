@@ -8,4 +8,5 @@ export const initialFormValues: SettingsFormValues = {
   leftClickAction: "save-to-dictionary",
   alwaysMultipleSelection: false,
   showNotifications: true,
+  fixCaptionPosition: true,
 };

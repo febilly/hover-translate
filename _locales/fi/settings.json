@@ -12,7 +12,12 @@
     "autoPause": { "label": "Automaattinen pysäytys", "tooltip": "Pysäytä video automaattisesti, kun hiiri on tekstityksen päällä", "helperText": "Pysäyttää videon automaattisesti, kun viet hiiren tekstityksen päälle" },
     "leftClickAction": { "label": "Vasen klikkaus", "tooltip": "Toiminto, kun klikkaat sanaa tekstityksessä", "options": { "saveToDictionary": "Tallenna sanalistaan", "copyOriginal": "Kopioi alkuperäinen", "copyTranslation": "Kopioi käännös", "nothing": "Ei mitään" } },
     "alwaysMultipleSelection": { "label": "Monivalinta aina käytössä", "tooltip": "Valitse useita sanoja ilman Vaihto-näppäintä", "helperText": "Voit valita useita sanoja kerralla pitämättä Vaihto-näppäintä painettuna" },
-    "showNotifications": { "label": "Näytä ilmoitukset", "tooltip": "Näytä ilmoitus, kun sana tallennetaan tai kopioidaan", "helperText": "Kun asetus on pois päältä, ilmoituksia ei näytetä sanojen tallentamisen tai kopioinnin yhteydessä" }
+    "showNotifications": { "label": "Näytä ilmoitukset", "tooltip": "Näytä ilmoitus, kun sana tallennetaan tai kopioidaan", "helperText": "Kun asetus on pois päältä, ilmoituksia ei näytetä sanojen tallentamisen tai kopioinnin yhteydessä" },
+    "fixCaptionPosition": {
+      "label": "Pidä tekstitykset paikallaan",
+      "tooltip": "Estää YouTubea nostamasta tekstityksiä osoittimen liikkuessa",
+      "helperText": "Tekstitykset pysyvät alhaalla juuri etenemispalkin yläpuolella eivätkä hyppää sanaa valitessa"
+    }
   },
   "modals": {
     "reset": {

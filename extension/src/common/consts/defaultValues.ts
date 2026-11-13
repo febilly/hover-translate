@@ -8,6 +8,7 @@ export const defaultSettings: Settings = {
   leftClickAction: "save-to-dictionary",
   alwaysMultipleSelection: false,
   showNotifications: true,
+  fixCaptionPosition: true,
 };
 
 export const defaultTooltipTheme: TooltipTheme = {

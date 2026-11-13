@@ -580,3 +580,37 @@ test.describe("English captions into Arabic", () => {
     await expect(player.notification).toHaveCSS("direction", "ltr");
   });
 });
+
+/** The caption window's distance from the bottom of its container, as the browser lays it out. */
+const bottomGap = (player) => player.frame.evaluate(() => {
+  const box = document.querySelector(".caption-window").getBoundingClientRect();
+  return document.querySelector(".ytp-caption-window-container").getBoundingClientRect().bottom - box.bottom;
+});
+
+test("captions stay at one height, above the control bar, whatever YouTube sets", async ({ openPlayer }) => {
+  const player = await openPlayer();
+  await player.captions("run for your life");
+  const gap = await bottomGap(player);
+
+  // YouTube lifts the window when the pointer moves, by its own `bottom` and margin.
+  await player.frame.evaluate(() => {
+    const captionWindow = document.querySelector(".caption-window");
+    captionWindow.style.bottom = "150px";
+    captionWindow.style.marginBottom = "30px";
+  });
+  expect(await bottomGap(player)).toBeCloseTo(gap, 0);
+  // The height is the player's 2 % plus the control bar's and seek slider's.
+  const containerHeight = await player.frame.evaluate(() => document.querySelector(".ytp-caption-window-container").getBoundingClientRect().height);
+  expect(gap).toBeCloseTo(containerHeight * 0.02 + 90, 0);
+});
+
+test("with \"keep captions in place\" off, YouTube's own position is left alone", async ({ openPlayer, storage }) => {
+  await storage.updateSettings({ fixCaptionPosition: false });
+  const player = await openPlayer();
+  await player.captions("run for your life");
+
+  await player.frame.evaluate(() => {
+    document.querySelector(".caption-window").style.bottom = "150px";
+  });
+  expect(await bottomGap(player)).toBeCloseTo(150, 0);
+});

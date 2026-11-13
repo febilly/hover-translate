@@ -5,8 +5,23 @@ const { test, expect, styledLine, BLACK_ON_WHITE, TRANSPARENT_COPY } = require("
 // (`coveredCaptionPointerService.ts`). The fixture sits in a frame of a page
 // on another site, as on a blog that embeds a video.
 
+// Most tests here put the words at YouTube's own position, under the controls
+// layer's menu; "keep captions in place" (on by default) lifts them above it.
 test.beforeEach(async ({ storage }) => {
-  await storage.updateSettings({ sourceLanguageCode: "auto", targetLanguageCode: "ru" });
+  await storage.updateSettings({ sourceLanguageCode: "auto", targetLanguageCode: "ru", fixCaptionPosition: false });
+});
+
+test("with the captions kept in place they sit above the seek slider, and hover works there", async ({ openPlayer, storage }) => {
+  await storage.updateSettings({ fixCaptionPosition: true });
+  const player = await openPlayer("embed");
+  await player.captions("run for your life");
+
+  const word = await player.word("run").boundingBox();
+  const slider = await player.frame.locator(".ytPlayerProgressBarDragContainer").boundingBox();
+  expect(word.y + word.height).toBeLessThanOrEqual(slider.y);
+
+  await player.word("run").hover({ force: true });
+  await expect(player.tooltip).toHaveText("бегать");
 });
 
 test("a word under the controls layer: hover translates and pauses, leaving resumes", async ({ openPlayer }) => {

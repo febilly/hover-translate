@@ -21,7 +21,12 @@
       }
     },
     "alwaysMultipleSelection": { "label": "始终开启多选", "tooltip": "无需按住 Shift 即可选择多个单词", "helperText": "开启后，你可以直接选择多个单词而无需按住 Shift 键" },
-    "showNotifications": { "label": "显示通知", "tooltip": "保存单词或复制文本时显示通知", "helperText": "关闭后，保存或复制时将不再弹出通知" }
+    "showNotifications": { "label": "显示通知", "tooltip": "保存单词或复制文本时显示通知", "helperText": "关闭后，保存或复制时将不再弹出通知" },
+    "fixCaptionPosition": {
+      "label": "固定字幕位置",
+      "tooltip": "禁止 YouTube 在鼠标移动时把字幕上移",
+      "helperText": "字幕固定在底部、略高于进度条的位置，选词时不会再跳动"
+    }
   },
   "modals": {
     "reset": { "title": "重置为默认设置？", "description": "这将把所有设置恢复为默认值。", "action": "重置" }

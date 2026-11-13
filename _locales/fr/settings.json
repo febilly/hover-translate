@@ -50,6 +50,11 @@
       "label": "Afficher les notifications",
       "tooltip": "Afficher les notifications lorsque des mots sont enregistrés dans le vocabulaire ou copiés dans le presse-papiers",
       "helperText": "Si l'option est désactivée, aucune notification ne s'affiche lorsque des mots sont enregistrés ou copiés"
+    },
+    "fixCaptionPosition": {
+      "label": "Garder les sous-titres en place",
+      "tooltip": "Empêche YouTube de remonter les sous-titres quand le pointeur bouge",
+      "helperText": "Les sous-titres restent en bas, juste au-dessus de la barre de progression, et ne bougent plus pendant que vous choisissez un mot"
     }
   },
   "modals": {

@@ -50,6 +50,11 @@
       "label": "Pokazuj powiadomienia",
       "tooltip": "Pokazuj powiadomienia, gdy słowa są zapisywane na liście słówek lub kopiowane do schowka",
       "helperText": "Gdy ta opcja jest wyłączona, przy zapisywaniu i kopiowaniu słów nie pojawiają się żadne powiadomienia"
+    },
+    "fixCaptionPosition": {
+      "label": "Nie przesuwaj napisów",
+      "tooltip": "Zapobiega podnoszeniu napisów przez YouTube po poruszeniu wskaźnika",
+      "helperText": "Napisy zostają na dole, tuż nad paskiem postępu, i nie skaczą podczas wybierania słowa"
     }
   },
   "modals": {

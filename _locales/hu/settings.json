@@ -50,6 +50,11 @@
       "label": "Értesítések megjelenítése",
       "tooltip": "Értesítés jelenik meg, amikor szót mentesz a szótárba vagy a vágólapra másolsz",
       "helperText": "Ha ki van kapcsolva, mentéskor és másoláskor nem jelenik meg értesítés"
+    },
+    "fixCaptionPosition": {
+      "label": "Feliratok rögzítése",
+      "tooltip": "Megakadályozza, hogy a YouTube feljebb tolja a feliratokat az egér mozgatásakor",
+      "helperText": "A feliratok alul maradnak, közvetlenül az előrehaladásjelző felett, és nem ugrálnak szóválasztás közben"
     }
   },
   "modals": {

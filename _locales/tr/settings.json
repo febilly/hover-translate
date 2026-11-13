@@ -50,6 +50,11 @@
       "label": "Bildirimleri göster",
       "tooltip": "Kelimeler kelime defterine kaydedildiğinde veya panoya kopyalandığında bildirim göster",
       "helperText": "Devre dışı bırakıldığında, kelimeler kaydedildiğinde veya kopyalandığında bildirim görünmez"
+    },
+    "fixCaptionPosition": {
+      "label": "Altyazıları yerinde tut",
+      "tooltip": "İşaretçi hareket edince YouTube'un altyazıları yukarı kaydırmasını engeller",
+      "helperText": "Altyazılar ilerleme çubuğunun hemen üstünde, altta kalır ve kelime seçerken zıplamaz"
     }
   },
   "modals": {

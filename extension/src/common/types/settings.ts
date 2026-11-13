@@ -9,6 +9,8 @@ export interface Settings {
   leftClickAction: LeftClickAction;
   alwaysMultipleSelection: boolean;
   showNotifications: boolean;
+  /** Keeps the captions where they are instead of letting YouTube lift them when the pointer moves. */
+  fixCaptionPosition: boolean;
 }
 
 export interface TooltipTheme {

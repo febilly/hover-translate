@@ -12,7 +12,12 @@
     "autoPause": { "label": "Pausa automatica", "tooltip": "Metti in pausa il video automaticamente quando passi il mouse sui sottotitoli", "helperText": "Mette in pausa il video quando passi il mouse sui sottotitoli" },
     "leftClickAction": { "label": "Azione clic sinistro", "tooltip": "Azione da eseguire facendo clic sulle parole nei sottotitoli", "options": { "saveToDictionary": "Salva tra i vocaboli", "copyOriginal": "Copia originale", "copyTranslation": "Copia traduzione", "nothing": "Nulla" } },
     "alwaysMultipleSelection": { "label": "Abilita sempre la selezione multipla", "tooltip": "Seleziona più parole senza tenere premuto Maiusc", "helperText": "Permette di selezionare più parole senza usare il tasto Maiusc" },
-    "showNotifications": { "label": "Mostra notifiche", "tooltip": "Mostra notifiche quando le parole vengono salvate o copiate", "helperText": "Se disattivato, non apparirà alcuna notifica" }
+    "showNotifications": { "label": "Mostra notifiche", "tooltip": "Mostra notifiche quando le parole vengono salvate o copiate", "helperText": "Se disattivato, non apparirà alcuna notifica" },
+    "fixCaptionPosition": {
+      "label": "Mantieni fissi i sottotitoli",
+      "tooltip": "Impedisce a YouTube di alzare i sottotitoli quando muovi il puntatore",
+      "helperText": "I sottotitoli restano in basso, appena sopra la barra di avanzamento, e non saltano mentre scegli una parola"
+    }
   },
   "modals": {
     "reset": {

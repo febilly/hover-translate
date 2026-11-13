@@ -50,6 +50,11 @@
       "label": "Show notifications",
       "tooltip": "Show notifications when words are saved to dictionary or copied to clipboard",
       "helperText": "When disabled, no notifications will appear when words are saved or copied"
+    },
+    "fixCaptionPosition": {
+      "label": "Keep captions in place",
+      "tooltip": "Stop YouTube from moving the captions up when the pointer moves",
+      "helperText": "Captions stay at the bottom, just above the progress bar, so they don't jump while you pick a word"
     }
   },
   "modals": {

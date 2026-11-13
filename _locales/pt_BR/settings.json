@@ -50,6 +50,11 @@
       "label": "Mostrar notificações",
       "tooltip": "Mostrar notificações ao salvar palavras no vocabulário ou copiá-las para a área de transferência",
       "helperText": "Quando desativado, nenhuma notificação aparece ao salvar ou copiar palavras"
+    },
+    "fixCaptionPosition": {
+      "label": "Manter as legendas no lugar",
+      "tooltip": "Impede o YouTube de subir as legendas quando o ponteiro se move",
+      "helperText": "As legendas ficam embaixo, logo acima da barra de progresso, e não pulam enquanto você escolhe uma palavra"
     }
   },
   "modals": {

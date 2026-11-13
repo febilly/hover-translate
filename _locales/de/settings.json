@@ -50,6 +50,11 @@
       "label": "Benachrichtigungen anzeigen",
       "tooltip": "Benachrichtigungen anzeigen, wenn Wörter in der Vokabelliste gespeichert oder in die Zwischenablage kopiert werden",
       "helperText": "Wenn deaktiviert, werden keine Benachrichtigungen angezeigt, wenn Wörter gespeichert oder kopiert werden"
+    },
+    "fixCaptionPosition": {
+      "label": "Untertitel fixieren",
+      "tooltip": "Verhindert, dass YouTube die Untertitel bei Mausbewegung nach oben schiebt",
+      "helperText": "Die Untertitel bleiben unten knapp über der Fortschrittsleiste und springen beim Auswählen eines Wortes nicht"
     }
   },
   "modals": {

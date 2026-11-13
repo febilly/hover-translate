@@ -22,12 +22,19 @@ const current: Settings = {
   leftClickAction: "nothing",
   alwaysMultipleSelection: true,
   showNotifications: false,
+  fixCaptionPosition: false,
 };
 
 describe("settings migrations", () => {
   it("the version this test knows is the current one", () => {
     // A new migration needs its cases here and in inferVersion.
-    expect(TARGET).toBe(4);
+    expect(TARGET).toBe(5);
+  });
+
+  it("5 adds the fixed captions switch, on, and keeps a choice already made", () => {
+    const version4 = { ...version1, translator: "google", alwaysMultipleSelection: false, showNotifications: true, leftClickAction: "nothing" };
+    expect(migrate(version4, 4, 5)).toEqual({ ...version4, fixCaptionPosition: true });
+    expect(migrate({ ...version4, fixCaptionPosition: false }, 4, 5)).toEqual({ ...version4, fixCaptionPosition: false });
   });
 
   it("nothing stored → nothing to migrate", () => {
@@ -65,6 +72,7 @@ describe("settings migrations", () => {
       alwaysMultipleSelection: false,
       showNotifications: true,
       leftClickAction: "save-to-dictionary",
+      fixCaptionPosition: true,
     });
   });
 
@@ -87,11 +95,12 @@ describe("settings migrations", () => {
 
   it("a stored version behind its settings is a floor, not the truth", () => {
     const version3 = { ...version1, translator: "deepl", useDictionary: false, alwaysMultipleSelection: true, showNotifications: false };
-    expect(migrate(version3, 1)).toEqual({ ...version3, useDictionary: undefined, leftClickAction: "copy-original" });
+    expect(migrate(version3, 1)).toEqual({ ...version3, useDictionary: undefined, leftClickAction: "copy-original", fixCaptionPosition: true });
   });
 
   it.each<[string, object, number]>([
-    ["leftClickAction", current, 4],
+    ["fixCaptionPosition", current, 5],
+    ["leftClickAction without it", { ...version1, translator: "google", leftClickAction: "nothing" }, 4],
     ["showNotifications without leftClickAction", { ...version1, translator: "google", showNotifications: true }, 3],
     ["translator only", { ...version1, translator: "google" }, 2],
     ["none of them", version1, 0],
