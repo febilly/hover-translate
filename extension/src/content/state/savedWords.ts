@@ -1,8 +1,12 @@
 import { StorageService } from "../../common/services/storageService.ts";
 import { TranslationData } from "../../common/types/translations.ts";
+import { canonicalize } from "../utils/savedMatcher.ts";
 
-/** The key a saved text is matched by: case does not matter. */
-export const savedKey = (text: string): string => text.trim().toLowerCase();
+/** The key a saved text is matched by: case and spacing do not matter (see `canonicalize`). */
+export const savedKey = (text: string): string => canonicalize(text).toLowerCase();
+
+/** Saved texts longer than this are never looked for in the captions. */
+const MAX_KEY_LENGTH = 100;
 
 /**
  * The saved dictionary entries as the content script needs them: a set of
@@ -13,6 +17,7 @@ export const savedKey = (text: string): string => text.trim().toLowerCase();
  */
 class SavedWords {
   private keys = new Set<string>();
+  private longestKey = 0;
   private listeners = new Set<() => void>();
   private initialized = false;
 
@@ -33,8 +38,14 @@ class SavedWords {
     });
   }
 
-  has(text: string): boolean {
-    return this.keys.has(savedKey(text));
+  /** Whether this key (from `savedKey`) is a saved text. */
+  has(key: string): boolean {
+    return this.keys.has(key);
+  }
+
+  /** The length of the longest saved text worth looking for. */
+  get maxKeyLength(): number {
+    return this.longestKey;
   }
 
   get size(): number {
@@ -55,7 +66,8 @@ class SavedWords {
   }
 
   private setEntries(entries: TranslationData[] | null | undefined) {
-    this.keys = new Set((entries ?? []).map((entry) => savedKey(entry.originalText)));
+    this.keys = new Set((entries ?? []).map((entry) => savedKey(entry.originalText)).filter((key) => key && [...key].length <= MAX_KEY_LENGTH));
+    this.longestKey = Math.max(0, ...Array.from(this.keys, (key) => [...key].length));
     this.listeners.forEach((listener) => listener());
   }
 }

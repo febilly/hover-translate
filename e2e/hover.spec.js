@@ -114,6 +114,43 @@ test("Shift selects from the word it was pressed on to the word under the pointe
   await player.page.keyboard.up("Shift");
 });
 
+test("Shift selects Chinese, Japanese and Korean text by character, not by the words the segmenter made", async ({ openPlayer, network }) => {
+  const player = await openPlayer();
+  network.translate("ru", "안녕하세요 여러", "здравствуйте, все");
+  await player.captions("안녕하세요 여러분 환영합니다");
+  const selected = player.frame.locator(".custom-tooltip-word-selected, .custom-tooltip-char-selected");
+  const char = (text) => player.frame.locator(".custom-tooltip-char", { hasText: text }).first();
+
+  // Without Shift a word is taken whole.
+  await char("여").hover();
+  await expect(selected).toHaveText(["여러분 "]);
+  await player.moveAway();
+
+  // With Shift the far end stops at the character under the pointer; the word it started on stays whole.
+  await player.word("안녕하세요").hover();
+  await player.page.keyboard.down("Shift");
+  await char("러").hover();
+  await expect(player.tooltip).toHaveText("здравствуйте, все");
+  await expect(selected).toHaveText(["안녕하세요 ", "여", "러"]);
+
+  // Moving along the word moves the end; on the word's last character it is taken whole; back to the first word, it is whole again.
+  await char("분").hover();
+  // Its last character: the word whole.
+  await expect(selected).toHaveText(["안녕하세요 ", "여러분 "]);
+  await player.word("안녕하세요").hover();
+  await expect(selected).toHaveText(["안녕하세요 "]);
+
+  // Backwards: the start stops at a character, the anchor word is whole.
+  await player.word("환영합니다").hover();
+  await player.page.keyboard.up("Shift");
+  await player.moveAway();
+  await player.word("환영합니다").hover();
+  await player.page.keyboard.down("Shift");
+  await char("러").hover();
+  await expect(selected).toHaveText(["러", "분", "환영합니다 "]);
+  await player.page.keyboard.up("Shift");
+});
+
 test("punctuation at the edges of the selection is neither sent to the translator nor shown in its answer", async ({ openPlayer, network }) => {
   const player = await openPlayer();
   await player.captions("They live in a carpa.");

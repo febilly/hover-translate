@@ -3,12 +3,9 @@ import { TooltipService } from "../services/tooltipService.ts";
 import { state } from "../state/stateManager.ts";
 import { CaptionWord, renderWord, splitIntoWords } from "../utils/wordSegmenter.ts";
 import { isShiftHeld } from "../utils/shiftKey.ts";
-import { findVisibleCaptionSegment } from "../utils/domUtils.ts";
-import { savedWords, savedKey } from "../state/savedWords.ts";
-import { trimEdgePunctuation } from "./translationCore.ts";
-
-/** The longest saved phrase looked for, in words. */
-const MAX_SAVED_PHRASE_WORDS = 12;
+import { fillWordSpan, findVisibleCaptionSegment } from "../utils/domUtils.ts";
+import { savedWords } from "../state/savedWords.ts";
+import { findSavedMatches } from "../utils/savedMatcher.ts";
 
 export class SubtitleCore {
   /**
@@ -31,9 +28,10 @@ export class SubtitleCore {
   }
 
   /**
-   * Marks the words that make up a saved word or phrase (longest match first,
-   * within one caption line), so they are drawn in yellow and a click on them
-   * unsaves the text. Runs again whenever the words or the saved set change.
+   * Marks the words that make up a saved word or phrase, so they are drawn in
+   * yellow and a click on them unsaves the text. Looked for across the whole
+   * caption window, so a phrase that wraps onto the next line is found too
+   * (`findSavedMatches`). Runs again whenever the words or the saved set change.
    */
   public highlightSavedWords = (): void => {
     document.querySelectorAll<HTMLElement>(`.${TOOLTIP_WORD_CLASS}`).forEach((word) => {
@@ -45,34 +43,24 @@ export class SubtitleCore {
 
     let groupId = 0;
 
-    document.querySelectorAll<HTMLElement>(`.${CAPTION_SEGMENT}`).forEach((segment) => {
-      const words = Array.from(segment.querySelectorAll<HTMLElement>(`.${TOOLTIP_WORD_CLASS}`));
-      let i = 0;
-      while (i < words.length) {
-        let matched = 0;
-        let key = "";
-        const longest = Math.min(MAX_SAVED_PHRASE_WORDS, words.length - i);
-        for (let length = longest; length >= 1; length--) {
-          const text = words.slice(i, i + length).map((w) => w.textContent ?? "").join("");
-          const candidate = trimEdgePunctuation(text.trim());
-          if (candidate && savedWords.has(candidate)) {
-            matched = length;
-            key = savedKey(candidate);
-            break;
-          }
-        }
-        if (matched === 0) { i++; continue; }
-        words.slice(i, i + matched).forEach((w) => {
-          w.classList.add(TOOLTIP_SAVED_WORD_CLASS);
-          w.setAttribute(DATA_ATTRIBUTES.SAVED, key);
-          w.setAttribute(DATA_ATTRIBUTES.SAVED_GROUP, String(groupId));
+    document.querySelectorAll<HTMLElement>(`.${CAPTION_WINDOW}`).forEach((captionWindow) => {
+      const words = Array.from(captionWindow.querySelectorAll<HTMLElement>(`.${TOOLTIP_WORD_CLASS}`));
+      const pieces = words.map((word, index) => ({
+        text: word.textContent ?? "",
+        breakBefore: index > 0 && word.parentElement !== words[index - 1].parentElement,
+      }));
+
+      findSavedMatches(pieces, (key) => savedWords.has(key), savedWords.maxKeyLength).forEach(({ first, last, key }) => {
+        words.slice(first, last + 1).forEach((word) => {
+          word.classList.add(TOOLTIP_SAVED_WORD_CLASS);
+          word.setAttribute(DATA_ATTRIBUTES.SAVED, key);
+          word.setAttribute(DATA_ATTRIBUTES.SAVED_GROUP, String(groupId));
         });
         groupId++;
-        i += matched;
-      }
+      });
     });
   };
-  
+
   public setWordsIndexes = () => {
     const allWords = document.querySelectorAll(`.${TOOLTIP_WORD_CLASS}`);
     allWords.forEach((word, index) => {
@@ -220,7 +208,7 @@ export class SubtitleCore {
       const rendered = renderWord(word);
 
       if (wordNode && wordNode.textContent !== rendered) {
-        wordNode.textContent = rendered;
+        fillWordSpan(wordNode as HTMLElement, rendered);
       }
     });
   }
@@ -242,7 +230,7 @@ export class SubtitleCore {
   private createWordSpan(word: CaptionWord): HTMLSpanElement {
     const wordSpan = document.createElement("span");
     wordSpan.classList.add(TOOLTIP_WORD_CLASS);
-    wordSpan.textContent = renderWord(word);
+    fillWordSpan(wordSpan, renderWord(word));
     wordSpan.addEventListener("pointerenter", this.tooltipService.handleWordMouseEnter);
     wordSpan.addEventListener("pointerleave", this.tooltipService.handleWordMouseLeave);
     let isDrag = false;
@@ -264,6 +252,7 @@ export class SubtitleCore {
       Math.abs(e.clientX - startX) > DRAG_THRESHOLD || Math.abs(e.clientY - startY) > DRAG_THRESHOLD;
 
     wordSpan.addEventListener("pointermove", (e: PointerEvent) => {
+      this.tooltipService.handleWordPointerMove(e, wordSpan);
       // If the cursor has moved further than the threshold, set the "drag" flag
       if (isFarFromPress(e)) {
         isDrag = true;

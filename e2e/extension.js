@@ -260,6 +260,14 @@ class Player {
     return this.frame.locator(".custom-tooltip-word").filter({ hasText: new RegExp(`^\\s*${literal}\\s*$`) }).first();
   }
 
+  /**
+   * The last Chinese, Japanese or Korean character of the word `text`. With Shift
+   * held, the pointer on it takes the word whole; on an earlier one, only as far as that character.
+   */
+  lastChar(text) {
+    return this.word(text).locator(".custom-tooltip-char").last();
+  }
+
   /** The index of the caption window `locator` is in, in the document. */
   windowIndexOf(locator) {
     return locator.evaluate((node) => Array.from(document.querySelectorAll(".caption-window")).indexOf(node.closest(".caption-window")));

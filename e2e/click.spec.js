@@ -176,6 +176,33 @@ test("hovering a saved phrase selects and translates all of it; with Shift the s
   await player.page.keyboard.up("Shift");
 });
 
+/** A dictionary entry for `originalText`, as a save writes it. */
+const entry = (originalText) => ({
+  id: crypto.randomUUID(), originalText, translatedText: "x", sourceLanguageCode: "en", targetLanguageCode: "ru", translatorName: "Google", timestamp: Date.now(),
+});
+
+test("a saved phrase is found across a line break, and punctuation is a unit of its own", async ({ openPlayer, storage, network }) => {
+  network.translate("ru", "for your", "для твоей");
+  await storage.set("local", { savedTranslations: [entry("for your"), entry("世界"), entry("well")] });
+  const player = await openPlayer();
+  const saved = player.frame.locator(".custom-tooltip-word-saved");
+
+  // The phrase wraps onto the next line.
+  await player.captions([{ lines: ["run for", "your life"] }]);
+  await expect(saved).toHaveText(["for ", "your "]);
+  // Hovering any of it takes the whole phrase, across the lines.
+  await player.word("your").hover();
+  await expect(player.frame.locator(".custom-tooltip-word-selected")).toHaveText(["for ", "your "]);
+  await expect(player.tooltip).toHaveText("для твоей");
+  await player.moveAway();
+
+  // A word with its punctuation around it, in English and in Chinese.
+  await player.captions([{ lines: ["Well, it is well-known."] }]);
+  await expect(saved).toHaveText(["Well, ", "well-known. "]);
+  await player.captions([{ lines: ["你好，世界！"] }]);
+  await expect(saved).toHaveText(["世界！"]);
+});
+
 test("right, middle and Ctrl clicks on a word save nothing", async ({ openPlayer, storage }) => {
   const player = await openPlayer();
   await player.captions("run for your life");

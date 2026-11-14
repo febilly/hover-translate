@@ -5,6 +5,8 @@ import {
   TOOLTIP_WORD_CLASS,
   DATA_ATTRIBUTES,
   TOOLTIP_SELECTED_WORD_CLASS,
+  TOOLTIP_CHAR_CLASS,
+  TOOLTIP_SELECTED_CHAR_CLASS,
   NOTIFICATION_TOOLTIP_CLASS,
   VIDEO_PLAYER,
 } from "../consts/consts.ts";
@@ -66,6 +68,14 @@ export class TooltipService {
   private lastSelectedWordNode: HTMLElement | null;
   /** The word a multi-selection started on; see `updateSelectedWords`. */
   private anchorWordNode: HTMLElement | null = null;
+  /**
+   * Where the selection starts inside its first word and ends inside its last,
+   * as the index of a Chinese, Japanese or Korean character; null is the word's
+   * own edge. Only the end away from the anchor can be partial.
+   */
+  private startChar: number | null = null;
+  private endChar: number | null = null;
+  private selectedCharNodes = new Set<HTMLElement>();
 
   /**
    * The translation request started for the selection that is currently on
@@ -357,7 +367,35 @@ export class TooltipService {
    * not be prised apart by a space that was never in the subtitle.
    */
   private getSelectedText(): string {
-    return this.getSortedSelectedWords().map((wordNode) => wordNode.textContent ?? "").join("").trim();
+    const words = this.getSortedSelectedWords();
+    const last = words.length - 1;
+
+    return words.map((word, index) =>
+      this.getWordText(word, index === 0 ? this.startChar : null, index === last ? this.endChar : null),
+    ).join("").trim();
+  }
+
+  private getCharNodes(word: HTMLElement): HTMLElement[] {
+    return Array.from(word.querySelectorAll<HTMLElement>(`.${TOOLTIP_CHAR_CLASS}`));
+  }
+
+  /** A word's text from its character `from` to its character `to` (inclusive); null is the word's edge. */
+  private getWordText(word: HTMLElement, from: number | null, to: number | null): string {
+    if (from === null && to === null) return word.textContent ?? "";
+
+    let text = "";
+    let inside = from === null;
+    let charIndex = 0;
+
+    for (const child of Array.from(word.childNodes)) {
+      const isChar = child instanceof HTMLElement && child.classList.contains(TOOLTIP_CHAR_CLASS);
+      if (isChar && charIndex === from) inside = true;
+      if (inside) text += child.textContent ?? "";
+      if (isChar && charIndex === to) break;
+      if (isChar) charIndex++;
+    }
+
+    return text;
   }
 
   /** The selected words in document order. */
@@ -415,7 +453,7 @@ export class TooltipService {
    * anchor) to the word the pointer is on now, in either direction — not over
    * every word the pointer passed, so moving back shrinks it.
    */
-  private updateSelectedWords = (selectedNode: HTMLElement) => {
+  private updateSelectedWords = (selectedNode: HTMLElement, charNode: HTMLElement | null = null) => {
     const selectedWordIndex = this.getWordIndex(selectedNode);
     if (selectedWordIndex === null) return;
 
@@ -430,6 +468,17 @@ export class TooltipService {
     this.firstSelectedWordNode = forward ? anchorNode : selectedNode;
     this.lastSelectedWordNode = forward ? selectedNode : anchorNode;
 
+    // The word the selection started on is always taken whole; the other end
+    // stops at the character the pointer is on.
+    // Stopping on the word's own last character (or starting on its first) takes
+    // the whole word, with the punctuation or space that follows (precedes) it.
+    const chars = charNode && selectedNode !== anchorNode ? this.getCharNodes(selectedNode) : [];
+    const charIndex = charNode ? chars.indexOf(charNode) : -1;
+    const atEdge = charIndex === (forward ? chars.length - 1 : 0);
+    const partial = charIndex >= 0 && !atEdge ? charIndex : null;
+    this.startChar = forward ? null : partial;
+    this.endChar = forward ? partial : null;
+
     this.applySelectionRange();
   };
 
@@ -440,6 +489,8 @@ export class TooltipService {
 
     const words = document.querySelectorAll<HTMLElement>(`[${DATA_ATTRIBUTES.SAVED_GROUP}="${group}"]`);
     this.anchorWordNode = words[0];
+    this.startChar = null;
+    this.endChar = null;
     this.firstSelectedWordNode = words[0];
     this.lastSelectedWordNode = words[words.length - 1];
     this.applySelectionRange();
@@ -461,17 +512,36 @@ export class TooltipService {
       return;
     }
 
-    this.selectedWordsNodes.forEach((word) => word.classList.remove(TOOLTIP_SELECTED_WORD_CLASS));
-    this.selectedWordsNodes.clear();
+    this.clearHighlight();
 
     document.querySelectorAll<HTMLElement>(`.${TOOLTIP_WORD_CLASS}`).forEach((word) => {
       const wordIndex = this.getWordIndex(word);
       if (wordIndex === null || wordIndex < firstWordIndex || wordIndex > lastWordIndex) return;
 
       this.selectedWordsNodes.add(word);
-      word.classList.add(TOOLTIP_SELECTED_WORD_CLASS);
+
+      const from = word === this.firstSelectedWordNode ? this.startChar : null;
+      const to = word === this.lastSelectedWordNode ? this.endChar : null;
+      const chars = this.getCharNodes(word);
+
+      if ((from === null && to === null) || chars.length === 0) {
+        word.classList.add(TOOLTIP_SELECTED_WORD_CLASS);
+        return;
+      }
+
+      chars.slice(from ?? 0, to === null ? undefined : to + 1).forEach((char) => {
+        this.selectedCharNodes.add(char);
+        char.classList.add(TOOLTIP_SELECTED_CHAR_CLASS);
+      });
     });
   };
+
+  private clearHighlight() {
+    this.selectedWordsNodes.forEach((word) => word.classList.remove(TOOLTIP_SELECTED_WORD_CLASS));
+    this.selectedWordsNodes.clear();
+    this.selectedCharNodes.forEach((char) => char.classList.remove(TOOLTIP_SELECTED_CHAR_CLASS));
+    this.selectedCharNodes.clear();
+  }
 
   /**
    * Re-resolves the selection after the captions were rebuilt and reindexed.
@@ -498,9 +568,10 @@ export class TooltipService {
     this.firstSelectedWordNode = null;
     this.lastSelectedWordNode = null;
     this.anchorWordNode = null;
+    this.startChar = null;
+    this.endChar = null;
     this.activeTranslation = null;
-    this.selectedWordsNodes.forEach((word) => word.classList.remove(TOOLTIP_SELECTED_WORD_CLASS));
-    this.selectedWordsNodes.clear();
+    this.clearHighlight();
   };
 
   /** Drops a translation that was scheduled but not started yet. */
@@ -516,23 +587,53 @@ export class TooltipService {
       // selection") builds the selection from the anchor word instead.
       const multiple = isShiftHeld(event) || state.settings.alwaysMultipleSelection;
       if (multiple || !this.selectSavedPhrase(target)) {
-        this.updateSelectedWords(target);
+        this.updateSelectedWords(target, multiple ? this.getCharUnderPointer(event, target) : null);
       }
 
-      // The selection is highlighted straight away; only the request waits.
-      this.cancelPendingTooltip();
-
-      if (this.translationCore.hasCachedTranslation(this.getSelectedText(), this.getSelectionContext())) {
-        this.showTooltip(target);
-        return;
-      }
-
-      this.hoverTimeoutId = setTimeout(() => {
-        this.hoverTimeoutId = undefined;
-        this.showTooltip(target);
-      }, HOVER_DELAY);
+      this.scheduleTranslation(target);
     }
   };
+
+  /**
+   * With Shift held the pointer moving over the characters of a Chinese,
+   * Japanese or Korean word moves the end of the selection one character at a
+   * time; `pointerenter` alone only says which word it came into.
+   */
+  public handleWordPointerMove = (event: PointerEvent, word: HTMLElement) => {
+    if (!isShiftHeld(event) && !state.settings.alwaysMultipleSelection) return;
+    if (!this.selectedWordsNodes.size || this.anchorWordNode === word) return;
+
+    const charNode = (event.target as HTMLElement).closest<HTMLElement>(`.${TOOLTIP_CHAR_CLASS}`);
+    if (!charNode || !word.contains(charNode)) return;
+
+    const before = this.getSelectedText();
+    this.updateSelectedWords(word, charNode);
+    if (this.getSelectedText() !== before) this.scheduleTranslation(word as AbortableElement);
+  };
+
+  /** The character of `word` under the pointer, if it is one of a Chinese, Japanese or Korean word. */
+  private getCharUnderPointer(event: PointerEvent, word: HTMLElement): HTMLElement | null {
+    const charNode = document.elementFromPoint(event.clientX, event.clientY)?.closest<HTMLElement>(`.${TOOLTIP_CHAR_CLASS}`);
+
+    return charNode && word.contains(charNode) ? charNode : null;
+  }
+
+  /** Translates the selection once the pointer has rested, at once when it is cached. */
+  private scheduleTranslation(target: AbortableElement) {
+    // The selection is highlighted straight away; only the request waits.
+    this.cancelPendingTooltip();
+    target.abortController?.abort();
+
+    if (this.translationCore.hasCachedTranslation(this.getSelectedText(), this.getSelectionContext())) {
+      this.showTooltip(target);
+      return;
+    }
+
+    this.hoverTimeoutId = setTimeout(() => {
+      this.hoverTimeoutId = undefined;
+      this.showTooltip(target);
+    }, HOVER_DELAY);
+  }
 
   public handleWordMouseLeave = (event: PointerEvent) => {
     const target = event.target as AbortableElement;

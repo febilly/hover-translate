@@ -32,7 +32,7 @@ export interface CaptionWord {
  * punctuation (`。`, `、`, `「」`, `ー`), of the Common script, counts as theirs —
  * except what Latin shares with them (`ʼ`, `·`, combining accents).
  */
-const SPACELESS_SCRIPTS =
+export const SPACELESS_SCRIPTS =
   /(?!\p{Script_Extensions=Latin})[\p{Script_Extensions=Han}\p{Script_Extensions=Hiragana}\p{Script_Extensions=Katakana}\p{Script_Extensions=Thai}\p{Script_Extensions=Lao}\p{Script_Extensions=Myanmar}\p{Script_Extensions=Khmer}]/u;
 
 /**

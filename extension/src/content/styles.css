@@ -28,7 +28,8 @@
     cursor: pointer;
 }
 
-.custom-tooltip-word-selected {
+.custom-tooltip-word-selected,
+.custom-tooltip-char-selected {
     background-color: #707070;
 }
 

@@ -1,6 +1,38 @@
 import rgba from "color-rgba";
 
-import { CAPTION_SEGMENT, CAPTION_WINDOW_CONTAINER, VIDEO_PLAYER } from "../consts/consts.ts";
+import { CAPTION_SEGMENT, CAPTION_WINDOW_CONTAINER, TOOLTIP_CHAR_CLASS, VIDEO_PLAYER } from "../consts/consts.ts";
+
+/** Han, kana (the prolonged sound mark too) and Hangul: written by character, so each is selectable alone. */
+const CJK_CHARACTER = /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}\u30FC]/u;
+
+/**
+ * Fills a word's span with its text. Each Chinese, Japanese or Korean
+ * character gets a span of its own inside it (the span's text is the same), so
+ * that a Shift selection can start or end on a character rather than on the
+ * word the segmenter made.
+ */
+export const fillWordSpan = (wordSpan: HTMLElement, text: string): void => {
+  wordSpan.textContent = "";
+  let run = "";
+
+  const flush = () => {
+    if (run) wordSpan.append(run);
+    run = "";
+  };
+
+  for (const char of text) {
+    if (!CJK_CHARACTER.test(char)) {
+      run += char;
+      continue;
+    }
+    flush();
+    const charSpan = document.createElement("span");
+    charSpan.className = TOOLTIP_CHAR_CLASS;
+    charSpan.textContent = char;
+    wordSpan.append(charSpan);
+  }
+  flush();
+};
 
 /**
  * The faintest text YouTube's caption settings offer (font opacity 25 %).

@@ -3,6 +3,9 @@ export const TOOLTIP_CLASS = "custom-tooltip";
 export const NOTIFICATION_TOOLTIP_CLASS = "custom-notification-tooltip";
 export const TOOLTIP_WORD_CLASS = "custom-tooltip-word";
 export const TOOLTIP_SELECTED_WORD_CLASS = "custom-tooltip-word-selected";
+// One character of a Chinese, Japanese or Korean word, so a Shift selection can end inside the word.
+export const TOOLTIP_CHAR_CLASS = "custom-tooltip-char";
+export const TOOLTIP_SELECTED_CHAR_CLASS = "custom-tooltip-char-selected";
 export const TOOLTIP_SAVED_WORD_CLASS = "custom-tooltip-word-saved";
 export const RATING_CARD_CLASS = "custom-rating-card";
 

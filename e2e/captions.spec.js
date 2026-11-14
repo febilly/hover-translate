@@ -279,7 +279,7 @@ test.describe("into Russian", () => {
 
     await player.word("思い").hover();
     await player.page.keyboard.down("Shift");
-    await player.word("ます。").hover();
+    await player.lastChar("ます。").hover();
     await expect(selectedWords(player)).toHaveText(["思い", "ます。"]);
 
     await moveAboveCaptions(player);
@@ -289,7 +289,7 @@ test.describe("into Russian", () => {
     await expect(selectedWords(player)).toHaveText(["思い", "ます。"]);
     await expect(player.frame.locator("[data-probe]")).toHaveClass([/custom-tooltip-word-selected/, /custom-tooltip-word-selected/]);
 
-    await player.word("ます。").hover();
+    await player.lastChar("ます。").hover();
     await player.page.keyboard.up("Shift");
     await expect(player.tooltip).toHaveText("Думаю");
     expect(network.to("translate.googleapis.com").at(-1).url.searchParams.get("q")).toBe("思います");
@@ -305,7 +305,7 @@ test.describe("into Russian", () => {
 
       await player.word(selection[0]).hover();
       await player.page.keyboard.down("Shift");
-      await player.word(selection[1]).hover();
+      await player.lastChar(selection[1]).hover();
       await expect(selectedWords(player)).toHaveText(selection);
 
       await moveAboveCaptions(player);
