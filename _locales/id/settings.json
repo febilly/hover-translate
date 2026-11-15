@@ -55,6 +55,15 @@
       "label": "Jaga posisi teks",
       "tooltip": "Mencegah YouTube menaikkan teks saat penunjuk digerakkan",
       "helperText": "Teks tetap di bagian bawah, tepat di atas bilah kemajuan, dan tidak melompat saat Anda memilih kata"
+    },
+    "seekOnCtrlClick": {
+      "label": "Ctrl+klik untuk melompat ke kata",
+      "tooltip": "Tahan Ctrl dan klik kata pada teks untuk memutar video dari sana",
+      "helperText": "Video diputar dari saat kata itu diucapkan"
+    },
+    "seekLeadSeconds": {
+      "label": "Mulai lebih awal (detik)",
+      "helperText": "Mulai selama ini sebelum kata agar suaranya tidak terpotong"
     }
   },
   "modals": {

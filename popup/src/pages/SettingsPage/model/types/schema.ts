@@ -10,6 +10,8 @@ export interface SettingsFormValues {
   alwaysMultipleSelection: boolean;
   showNotifications: boolean;
   fixCaptionPosition: boolean;
+  seekOnCtrlClick: boolean;
+  seekLeadSeconds: number;
 }
 
 export interface Language {

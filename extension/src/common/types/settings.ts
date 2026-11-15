@@ -11,6 +11,10 @@ export interface Settings {
   showNotifications: boolean;
   /** Keeps the captions where they are instead of letting YouTube lift them when the pointer moves. */
   fixCaptionPosition: boolean;
+  /** Ctrl+click on a caption word jumps the video to where the word appeared. */
+  seekOnCtrlClick: boolean;
+  /** Seconds before that moment to start from, so the word is not cut off. */
+  seekLeadSeconds: number;
 }
 
 export interface TooltipTheme {

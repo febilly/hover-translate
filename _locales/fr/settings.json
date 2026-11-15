@@ -55,6 +55,15 @@
       "label": "Garder les sous-titres en place",
       "tooltip": "Empêche YouTube de remonter les sous-titres quand le pointeur bouge",
       "helperText": "Les sous-titres restent en bas, juste au-dessus de la barre de progression, et ne bougent plus pendant que vous choisissez un mot"
+    },
+    "seekOnCtrlClick": {
+      "label": "Ctrl+clic pour aller au mot",
+      "tooltip": "Maintenez Ctrl et cliquez sur un mot du sous-titre pour lire la vidéo à partir de là",
+      "helperText": "La vidéo démarre à l’endroit où le mot a été prononcé"
+    },
+    "seekLeadSeconds": {
+      "label": "Démarrer plus tôt de (secondes)",
+      "helperText": "Démarrer ce temps avant le mot pour que le son ne soit pas coupé"
     }
   },
   "modals": {

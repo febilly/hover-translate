@@ -203,6 +203,46 @@ test("a saved phrase is found across a line break, and punctuation is a unit of 
   await expect(saved).toHaveText(["世界！"]);
 });
 
+/** Puts the (4 s, looping) fixture video at `seconds`, paused. */
+const seekVideo = (player, seconds) => player.frame.evaluate(([selector, seconds]) => {
+  const video = document.querySelector(selector);
+  video.pause();
+  video.currentTime = seconds;
+}, [player.video, seconds]);
+
+const videoTime = (player) => player.frame.evaluate((selector) => document.querySelector(selector).currentTime, player.video);
+
+test("Ctrl+click takes the video to where the word appeared, half a second earlier, and plays", async ({ openPlayer, storage }) => {
+  const player = await openPlayer();
+  await seekVideo(player, 3);
+  await player.captions("run for your life");
+  await seekVideo(player, 0.2);
+
+  await player.word("your").click({ modifiers: ["Control"] });
+
+  await expect.poll(() => videoTime(player)).toBeGreaterThanOrEqual(2.4);
+  expect(await player.isPaused()).toBe(false);
+  // Not a click action: nothing is saved.
+  expect(await storage.get("local", "savedTranslations")).toBeUndefined();
+});
+
+test("the lead-in is the one set, and with the option off Ctrl+click does nothing", async ({ openPlayer, storage }) => {
+  await storage.updateSettings({ seekLeadSeconds: 2 });
+  const player = await openPlayer();
+  await seekVideo(player, 3.5);
+  await player.captions("run for your life");
+  await seekVideo(player, 0.2);
+  await player.word("life").click({ modifiers: ["Control"] });
+  await expect.poll(() => videoTime(player)).toBeGreaterThanOrEqual(1.4);
+  expect(await videoTime(player)).toBeLessThan(3.5);
+
+  await storage.updateSettings({ seekOnCtrlClick: false });
+  await seekVideo(player, 0.2);
+  await player.word("life").click({ modifiers: ["Control"] });
+  await player.moveAway();
+  expect(await videoTime(player)).toBeLessThan(1);
+});
+
 test("right, middle and Ctrl clicks on a word save nothing", async ({ openPlayer, storage }) => {
   const player = await openPlayer();
   await player.captions("run for your life");

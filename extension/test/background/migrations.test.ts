@@ -23,18 +23,26 @@ const current: Settings = {
   alwaysMultipleSelection: true,
   showNotifications: false,
   fixCaptionPosition: false,
+  seekOnCtrlClick: false,
+  seekLeadSeconds: 1,
 };
 
 describe("settings migrations", () => {
   it("the version this test knows is the current one", () => {
     // A new migration needs its cases here and in inferVersion.
-    expect(TARGET).toBe(5);
+    expect(TARGET).toBe(6);
   });
 
   it("5 adds the fixed captions switch, on, and keeps a choice already made", () => {
     const version4 = { ...version1, translator: "google", alwaysMultipleSelection: false, showNotifications: true, leftClickAction: "nothing" };
     expect(migrate(version4, 4, 5)).toEqual({ ...version4, fixCaptionPosition: true });
     expect(migrate({ ...version4, fixCaptionPosition: false }, 4, 5)).toEqual({ ...version4, fixCaptionPosition: false });
+  });
+
+  it("6 adds the Ctrl+click seek switch, on, with half a second of lead, and keeps a choice already made", () => {
+    const version5 = { ...version1, translator: "google", alwaysMultipleSelection: false, showNotifications: true, leftClickAction: "nothing", fixCaptionPosition: true };
+    expect(migrate(version5, 5, 6)).toEqual({ ...version5, seekOnCtrlClick: true, seekLeadSeconds: 0.5 });
+    expect(migrate({ ...version5, seekOnCtrlClick: false, seekLeadSeconds: 2 }, 5, 6)).toEqual({ ...version5, seekOnCtrlClick: false, seekLeadSeconds: 2 });
   });
 
   it("nothing stored → nothing to migrate", () => {
@@ -73,6 +81,8 @@ describe("settings migrations", () => {
       showNotifications: true,
       leftClickAction: "save-to-dictionary",
       fixCaptionPosition: true,
+      seekOnCtrlClick: true,
+      seekLeadSeconds: 0.5,
     });
   });
 
@@ -95,11 +105,12 @@ describe("settings migrations", () => {
 
   it("a stored version behind its settings is a floor, not the truth", () => {
     const version3 = { ...version1, translator: "deepl", useDictionary: false, alwaysMultipleSelection: true, showNotifications: false };
-    expect(migrate(version3, 1)).toEqual({ ...version3, useDictionary: undefined, leftClickAction: "copy-original", fixCaptionPosition: true });
+    expect(migrate(version3, 1)).toEqual({ ...version3, useDictionary: undefined, leftClickAction: "copy-original", fixCaptionPosition: true, seekOnCtrlClick: true, seekLeadSeconds: 0.5 });
   });
 
   it.each<[string, object, number]>([
-    ["fixCaptionPosition", current, 5],
+    ["seekOnCtrlClick", current, 6],
+    ["fixCaptionPosition without it", { ...version1, translator: "google", fixCaptionPosition: true }, 5],
     ["leftClickAction without it", { ...version1, translator: "google", leftClickAction: "nothing" }, 4],
     ["showNotifications without leftClickAction", { ...version1, translator: "google", showNotifications: true }, 3],
     ["translator only", { ...version1, translator: "google" }, 2],

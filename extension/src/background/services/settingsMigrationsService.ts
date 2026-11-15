@@ -59,6 +59,11 @@ export class SettingsMigrationsService {
       ...oldSettings,
       fixCaptionPosition: oldSettings.fixCaptionPosition ?? true,
     }),
+    6: (oldSettings) => ({
+      ...oldSettings,
+      seekOnCtrlClick: oldSettings.seekOnCtrlClick ?? true,
+      seekLeadSeconds: oldSettings.seekLeadSeconds ?? 0.5,
+    }),
   };
 
   /*
@@ -105,6 +110,7 @@ export class SettingsMigrationsService {
    * carrying that field will be read as the version below it.
    */
   public inferVersion(settings: Settings): number {
+    if (settings.seekOnCtrlClick !== undefined) return 6;
     if (settings.fixCaptionPosition !== undefined) return 5;
     if (settings.leftClickAction !== undefined) return 4;
     if (settings.showNotifications !== undefined) return 3;

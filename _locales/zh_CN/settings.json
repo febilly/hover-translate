@@ -26,6 +26,15 @@
       "label": "固定字幕位置",
       "tooltip": "禁止 YouTube 在鼠标移动时把字幕上移",
       "helperText": "字幕固定在底部、略高于进度条的位置，选词时不会再跳动"
+    },
+    "seekOnCtrlClick": {
+      "label": "Ctrl+点击跳转到该词",
+      "tooltip": "按住 Ctrl 点击字幕中的词，视频从该处开始播放",
+      "helperText": "视频会从这个词出现的位置开始播放"
+    },
+    "seekLeadSeconds": {
+      "label": "提前开始（秒）",
+      "helperText": "比该词提前这么久开始播放，避免词的声音被截断"
     }
   },
   "modals": {

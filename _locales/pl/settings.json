@@ -55,6 +55,15 @@
       "label": "Nie przesuwaj napisów",
       "tooltip": "Zapobiega podnoszeniu napisów przez YouTube po poruszeniu wskaźnika",
       "helperText": "Napisy zostają na dole, tuż nad paskiem postępu, i nie skaczą podczas wybierania słowa"
+    },
+    "seekOnCtrlClick": {
+      "label": "Ctrl+klik przenosi do słowa",
+      "tooltip": "Przytrzymaj Ctrl i kliknij słowo napisów, aby odtworzyć wideo od tego miejsca",
+      "helperText": "Wideo zacznie się od miejsca, w którym padło to słowo"
+    },
+    "seekLeadSeconds": {
+      "label": "Zacznij wcześniej o (sekundy)",
+      "helperText": "Zacznij tyle przed słowem, aby jego dźwięk nie został ucięty"
     }
   },
   "modals": {

@@ -55,6 +55,15 @@
       "label": "Altyazıları yerinde tut",
       "tooltip": "İşaretçi hareket edince YouTube'un altyazıları yukarı kaydırmasını engeller",
       "helperText": "Altyazılar ilerleme çubuğunun hemen üstünde, altta kalır ve kelime seçerken zıplamaz"
+    },
+    "seekOnCtrlClick": {
+      "label": "Ctrl+tık ile kelimeye atla",
+      "tooltip": "Ctrl tuşuna basılı tutup bir altyazı kelimesine tıklayın, video oradan oynatılsın",
+      "helperText": "Video, kelimenin söylendiği yerden başlar"
+    },
+    "seekLeadSeconds": {
+      "label": "Daha erken başlat (saniye)",
+      "helperText": "Kelimenin sesi kesilmesin diye bu kadar önceden başlat"
     }
   },
   "modals": {

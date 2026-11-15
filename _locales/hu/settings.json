@@ -55,6 +55,15 @@
       "label": "Feliratok rögzítése",
       "tooltip": "Megakadályozza, hogy a YouTube feljebb tolja a feliratokat az egér mozgatásakor",
       "helperText": "A feliratok alul maradnak, közvetlenül az előrehaladásjelző felett, és nem ugrálnak szóválasztás közben"
+    },
+    "seekOnCtrlClick": {
+      "label": "Ctrl+kattintás a szóra ugrik",
+      "tooltip": "Tartsd lenyomva a Ctrl-t, és kattints egy feliratszóra, hogy onnan induljon a videó",
+      "helperText": "A videó attól a ponttól indul, ahol a szó elhangzott"
+    },
+    "seekLeadSeconds": {
+      "label": "Korábbi indulás (másodperc)",
+      "helperText": "Ennyivel a szó előtt indul, hogy a hangja ne vágódjon le"
     }
   },
   "modals": {

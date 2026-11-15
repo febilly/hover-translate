@@ -3,7 +3,7 @@ import { TooltipService } from "../services/tooltipService.ts";
 import { state } from "../state/stateManager.ts";
 import { CaptionWord, renderWord, splitIntoWords } from "../utils/wordSegmenter.ts";
 import { isShiftHeld } from "../utils/shiftKey.ts";
-import { fillWordSpan, findVisibleCaptionSegment } from "../utils/domUtils.ts";
+import { fillWordSpan, findVisibleCaptionSegment, getPlayerVideo } from "../utils/domUtils.ts";
 import { savedWords } from "../state/savedWords.ts";
 import { findSavedMatches } from "../utils/savedMatcher.ts";
 
@@ -103,12 +103,12 @@ export class SubtitleCore {
         if (index >= keptCount) wordNode.remove();
       });
       this.renderKeptWords(captionSegment, words.slice(0, keptCount));
-      captionSegment.appendChild(this.buildWordSpans(words.slice(keptCount)));
+      captionSegment.appendChild(this.buildWordSpans(words.slice(keptCount), captionSegment));
       this.parsedSegments.set(captionSegment, words);
       return true;
     }
 
-    const fragment = this.buildWordSpans(words);
+    const fragment = this.buildWordSpans(words, captionSegment);
 
     captionSegment.textContent = "";
     captionSegment.appendChild(fragment);
@@ -220,9 +220,22 @@ export class SubtitleCore {
     });
   }
 
-  private buildWordSpans(words: CaptionWord[]): DocumentFragment {
+  /**
+   * Each new span is stamped with the video's time: the moment a word shows up
+   * is the closest thing to when it is said that the page gives (YouTube's
+   * markup carries no times). For auto-generated captions that is one time per
+   * word, as they are appended; a line of manual captions comes at once, at
+   * its start. The words a line keeps through a redraw keep their stamp.
+   */
+  private buildWordSpans(words: CaptionWord[], captionSegment: HTMLElement): DocumentFragment {
     const fragment = document.createDocumentFragment();
-    words.forEach((word) => fragment.appendChild(this.createWordSpan(word)));
+    const time = getPlayerVideo(captionSegment)?.currentTime;
+
+    words.forEach((word) => {
+      const wordSpan = this.createWordSpan(word);
+      if (time !== undefined && Number.isFinite(time)) wordSpan.setAttribute(DATA_ATTRIBUTES.TIME, String(time));
+      fragment.appendChild(wordSpan);
+    });
 
     return fragment;
   }
@@ -264,9 +277,13 @@ export class SubtitleCore {
       // The release is measured too: YouTube moves the caption window after
       // the pointer, so each move of a drag lands beside the word, the word
       // gets no `pointermove` at all, and the release is on it again.
-      // Nor when Ctrl is held at the release: on a Mac, Ctrl+click is the right
-      // click, yet it comes as the main button; elsewhere Ctrl on a word meant
-      // nothing, so one rule for all.
+      // Ctrl+click is no click action: it takes the video to the word (on a Mac
+      // it is also the right click, yet it comes as the main button).
+      if (e.button === 0 && e.ctrlKey && !isDrag && !isFarFromPress(e)) {
+        if (state.settings.seekOnCtrlClick) this.seekToWord(wordSpan);
+        return;
+      }
+
       if (e.button === 0 && !e.ctrlKey && !isDrag && !isFarFromPress(e)) {
         switch (state.settings.leftClickAction) {
         case "save-to-dictionary": {
@@ -294,6 +311,20 @@ export class SubtitleCore {
     });
 
     return wordSpan;
+  }
+
+  /** Starts the video a little before the moment the word appeared (`seekLeadSeconds`). */
+  private seekToWord(wordSpan: HTMLElement): void {
+    const stamp = wordSpan.getAttribute(DATA_ATTRIBUTES.TIME);
+    const video = getPlayerVideo(wordSpan);
+    if (stamp === null || !video) return;
+
+    const lead = Math.max(0, Number(state.settings.seekLeadSeconds) || 0);
+    video.currentTime = Math.max(0, Number(stamp) - lead);
+    // Autoplay policies can refuse this; the click is a gesture, so they rarely do.
+    video.play().catch(() => {
+      /* the browser declined to start the video */
+    });
   }
 
   /**

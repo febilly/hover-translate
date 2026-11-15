@@ -7,6 +7,7 @@ import Button from "@mui/material/Button";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormHelperText from "@mui/material/FormHelperText";
 import Switch from "@mui/material/Switch";
+import TextField from "@mui/material/TextField";
 import Collapse from "@mui/material/Collapse";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 
@@ -110,6 +111,11 @@ export const SettingsForm: FC<SettingsFormProps> = ({
 
   const currentTranslator = watch("translator");
   const alwaysMultipleSelection = watch("alwaysMultipleSelection");
+  const seekOnCtrlClick = watch("seekOnCtrlClick");
+  const seekLeadSeconds = watch("seekLeadSeconds");
+  // What is typed in the field; the setting is saved when the field is left.
+  const [seekLeadText, setSeekLeadText] = useState(String(seekLeadSeconds ?? 0.5));
+  useEffect(() => setSeekLeadText(String(seekLeadSeconds ?? 0.5)), [seekLeadSeconds]);
 
   useEffect(() => {
     reset(initialValues);
@@ -396,6 +402,19 @@ export const SettingsForm: FC<SettingsFormProps> = ({
     }
   };
 
+  const commitSeekLead = useCallback(() => {
+    const seconds = Math.min(10, Math.max(0, Math.round(parseFloat(seekLeadText) * 10) / 10));
+    if (Number.isNaN(seconds)) {
+      setSeekLeadText(String(getValues("seekLeadSeconds")));
+      return;
+    }
+
+    setSeekLeadText(String(seconds));
+    if (seconds === getValues("seekLeadSeconds")) return;
+    setValue("seekLeadSeconds", seconds, { shouldDirty: true });
+    handleSubmit(onSubmit)();
+  }, [seekLeadText, getValues, onSubmit, setValue, handleSubmit]);
+
   const handleChangeSwitch = useCallback((field: keyof SettingsFormValues, value: boolean) => {
     setValue(field, value, { shouldDirty: true });
     handleSubmit(onSubmit)();
@@ -644,6 +663,43 @@ export const SettingsForm: FC<SettingsFormProps> = ({
             </FormControl>
           )}
         />
+        <Controller
+          name="seekOnCtrlClick"
+          control={control}
+          render={({ field }) => (
+            <FormControl fullWidth title={t("fields.seekOnCtrlClick.tooltip")}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={field.value}
+                    onChange={(_, checked) => handleChangeSwitch("seekOnCtrlClick", checked)}
+                  />
+                }
+                label={t("fields.seekOnCtrlClick.label")}
+              />
+              <FormHelperText>
+                {t("fields.seekOnCtrlClick.helperText")}
+              </FormHelperText>
+            </FormControl>
+          )}
+        />
+        <Collapse in={seekOnCtrlClick} unmountOnExit>
+          <TextField
+            id="seekLeadSeconds"
+            type="number"
+            size="small"
+            fullWidth
+            label={t("fields.seekLeadSeconds.label")}
+            helperText={t("fields.seekLeadSeconds.helperText")}
+            value={seekLeadText}
+            onChange={(event) => setSeekLeadText(event.target.value)}
+            onBlur={commitSeekLead}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") commitSeekLead();
+            }}
+            slotProps={{ htmlInput: { min: 0, max: 10, step: 0.1 } }}
+          />
+        </Collapse>
         <ConfirmationModal
           trigger={(
             <Button

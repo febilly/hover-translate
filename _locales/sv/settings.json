@@ -55,6 +55,15 @@
       "label": "Behåll undertexterna på plats",
       "tooltip": "Hindrar YouTube från att flytta upp undertexterna när pekaren rör sig",
       "helperText": "Undertexterna ligger kvar längst ned, strax ovanför förloppsindikatorn, och hoppar inte medan du väljer ett ord"
+    },
+    "seekOnCtrlClick": {
+      "label": "Ctrl+klick hoppar till ordet",
+      "tooltip": "Håll in Ctrl och klicka på ett ord i undertexten för att spela upp videon därifrån",
+      "helperText": "Videon börjar där ordet sades"
+    },
+    "seekLeadSeconds": {
+      "label": "Starta tidigare med (sekunder)",
+      "helperText": "Starta så här långt före ordet så att ljudet inte klipps av"
     }
   },
   "modals": {

@@ -9,6 +9,8 @@ export const defaultSettings: Settings = {
   alwaysMultipleSelection: false,
   showNotifications: true,
   fixCaptionPosition: true,
+  seekOnCtrlClick: true,
+  seekLeadSeconds: 0.5,
 };
 
 export const defaultTooltipTheme: TooltipTheme = {

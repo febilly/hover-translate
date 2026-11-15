@@ -9,4 +9,6 @@ export const initialFormValues: SettingsFormValues = {
   alwaysMultipleSelection: false,
   showNotifications: true,
   fixCaptionPosition: true,
+  seekOnCtrlClick: true,
+  seekLeadSeconds: 0.5,
 };

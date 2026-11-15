@@ -55,6 +55,15 @@
       "label": "Mantener los subtítulos fijos",
       "tooltip": "Evita que YouTube suba los subtítulos al mover el puntero",
       "helperText": "Los subtítulos se quedan abajo, justo encima de la barra de progreso, y no saltan mientras eliges una palabra"
+    },
+    "seekOnCtrlClick": {
+      "label": "Ctrl+clic para ir a la palabra",
+      "tooltip": "Mantén Ctrl y haz clic en una palabra del subtítulo para reproducir el vídeo desde ahí",
+      "helperText": "El vídeo empieza donde se dijo esa palabra"
+    },
+    "seekLeadSeconds": {
+      "label": "Empezar antes (segundos)",
+      "helperText": "Empezar este tiempo antes de la palabra para que su sonido no se corte"
     }
   },
   "modals": {

@@ -1014,3 +1014,30 @@ describe("the language fields open a panel with a search", () => {
     expect(document.activeElement).toBe(options[0]);
   });
 });
+
+describe("Ctrl+click to jump to a word", () => {
+  it("is on with half a second of lead-in; the switch and the lead-in are saved", async () => {
+    const { fake, user } = await renderPopup({ sync: { settings: defaultSettings } });
+    const writes = settingsWrites(fake);
+
+    const toggle = await screen.findByRole("switch", { name: "Ctrl+click to jump to a word" });
+    expect((toggle as HTMLInputElement).checked).toBe(true);
+    const lead = await screen.findByLabelText("Start earlier by (seconds)");
+    expect((lead as HTMLInputElement).value).toBe("0.5");
+
+    // Saved when the field is left; a value out of range is brought into it.
+    await user.clear(lead);
+    await user.type(lead, "1.25");
+    await user.tab();
+    await waitFor(() => expect(writes()[writes().length - 1]).toMatchObject({ settings: { seekLeadSeconds: 1.3 } }));
+    await user.clear(lead);
+    await user.type(lead, "99");
+    await user.tab();
+    await waitFor(() => expect(writes()[writes().length - 1]).toMatchObject({ settings: { seekLeadSeconds: 10 } }));
+
+    // Off: the lead-in has nothing to do and goes.
+    await user.click(toggle);
+    await waitFor(() => expect(writes()[writes().length - 1]).toMatchObject({ settings: { seekOnCtrlClick: false } }));
+    await waitFor(() => expect(screen.queryByLabelText("Start earlier by (seconds)")).toBeNull());
+  });
+});

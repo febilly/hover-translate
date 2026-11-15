@@ -17,6 +17,15 @@
       "label": "Nechat titulky na místě",
       "tooltip": "Zabrání YouTube zvedat titulky při pohybu ukazatele",
       "helperText": "Titulky zůstanou dole těsně nad ukazatelem průběhu a při výběru slova neskáčou"
+    },
+    "seekOnCtrlClick": {
+      "label": "Ctrl+klik přeskočí na slovo",
+      "tooltip": "Podržte Ctrl a klikněte na slovo titulků, video se přehraje od tohoto místa",
+      "helperText": "Video začne od místa, kde slovo zaznělo"
+    },
+    "seekLeadSeconds": {
+      "label": "Začít dříve o (sekundy)",
+      "helperText": "Začít o tolik dříve před slovem, aby se jeho zvuk neuřízl"
     }
   },
   "modals": {

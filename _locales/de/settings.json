@@ -55,6 +55,15 @@
       "label": "Untertitel fixieren",
       "tooltip": "Verhindert, dass YouTube die Untertitel bei Mausbewegung nach oben schiebt",
       "helperText": "Die Untertitel bleiben unten knapp über der Fortschrittsleiste und springen beim Auswählen eines Wortes nicht"
+    },
+    "seekOnCtrlClick": {
+      "label": "Strg+Klick springt zum Wort",
+      "tooltip": "Strg gedrückt halten und auf ein Untertitelwort klicken, um das Video ab dort abzuspielen",
+      "helperText": "Das Video startet an der Stelle, an der das Wort gesprochen wurde"
+    },
+    "seekLeadSeconds": {
+      "label": "Früher starten um (Sekunden)",
+      "helperText": "So viel früher vor dem Wort starten, damit sein Ton nicht abgeschnitten wird"
     }
   },
   "modals": {

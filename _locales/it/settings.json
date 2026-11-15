@@ -17,6 +17,15 @@
       "label": "Mantieni fissi i sottotitoli",
       "tooltip": "Impedisce a YouTube di alzare i sottotitoli quando muovi il puntatore",
       "helperText": "I sottotitoli restano in basso, appena sopra la barra di avanzamento, e non saltano mentre scegli una parola"
+    },
+    "seekOnCtrlClick": {
+      "label": "Ctrl+clic per andare alla parola",
+      "tooltip": "Tieni premuto Ctrl e fai clic su una parola del sottotitolo per riprodurre il video da lì",
+      "helperText": "Il video parte dal punto in cui la parola è stata detta"
+    },
+    "seekLeadSeconds": {
+      "label": "Anticipa l’inizio di (secondi)",
+      "helperText": "Parti questo tempo prima della parola, così il suo suono non viene tagliato"
     }
   },
   "modals": {

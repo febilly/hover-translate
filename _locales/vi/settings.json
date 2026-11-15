@@ -55,6 +55,15 @@
       "label": "Giữ nguyên vị trí phụ đề",
       "tooltip": "Ngăn YouTube đẩy phụ đề lên khi di chuyển con trỏ",
       "helperText": "Phụ đề ở lại phía dưới, ngay trên thanh tiến trình, và không nhảy khi bạn chọn từ"
+    },
+    "seekOnCtrlClick": {
+      "label": "Ctrl+nhấp để nhảy tới từ",
+      "tooltip": "Giữ Ctrl và nhấp vào một từ phụ đề để phát video từ đó",
+      "helperText": "Video phát từ chỗ từ đó được nói"
+    },
+    "seekLeadSeconds": {
+      "label": "Bắt đầu sớm hơn (giây)",
+      "helperText": "Bắt đầu sớm hơn từ này chừng đó để âm thanh của từ không bị cắt"
     }
   },
   "modals": {

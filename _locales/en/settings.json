@@ -55,6 +55,15 @@
       "label": "Keep captions in place",
       "tooltip": "Stop YouTube from moving the captions up when the pointer moves",
       "helperText": "Captions stay at the bottom, just above the progress bar, so they don't jump while you pick a word"
+    },
+    "seekOnCtrlClick": {
+      "label": "Ctrl+click to jump to a word",
+      "tooltip": "Hold Ctrl and click a subtitle word to play the video from there",
+      "helperText": "The video starts playing from where that word was said"
+    },
+    "seekLeadSeconds": {
+      "label": "Start earlier by (seconds)",
+      "helperText": "Start this long before the word so its sound is not cut off"
     }
   },
   "modals": {

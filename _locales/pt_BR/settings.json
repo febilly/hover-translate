@@ -55,6 +55,15 @@
       "label": "Manter as legendas no lugar",
       "tooltip": "Impede o YouTube de subir as legendas quando o ponteiro se move",
       "helperText": "As legendas ficam embaixo, logo acima da barra de progresso, e não pulam enquanto você escolhe uma palavra"
+    },
+    "seekOnCtrlClick": {
+      "label": "Ctrl+clique para ir à palavra",
+      "tooltip": "Segure Ctrl e clique em uma palavra da legenda para reproduzir o vídeo a partir dali",
+      "helperText": "O vídeo começa de onde a palavra foi dita"
+    },
+    "seekLeadSeconds": {
+      "label": "Começar antes (segundos)",
+      "helperText": "Começar este tempo antes da palavra para que o som dela não seja cortado"
     }
   },
   "modals": {

@@ -17,6 +17,15 @@
       "label": "Pidä tekstitykset paikallaan",
       "tooltip": "Estää YouTubea nostamasta tekstityksiä osoittimen liikkuessa",
       "helperText": "Tekstitykset pysyvät alhaalla juuri etenemispalkin yläpuolella eivätkä hyppää sanaa valitessa"
+    },
+    "seekOnCtrlClick": {
+      "label": "Ctrl+napsautus hyppää sanaan",
+      "tooltip": "Pidä Ctrl painettuna ja napsauta tekstityksen sanaa toistaaksesi videon siitä kohdasta",
+      "helperText": "Video alkaa kohdasta, jossa sana sanottiin"
+    },
+    "seekLeadSeconds": {
+      "label": "Aloita aikaisemmin (sekuntia)",
+      "helperText": "Aloita näin paljon ennen sanaa, jotta sen ääni ei katkea"
     }
   },
   "modals": {

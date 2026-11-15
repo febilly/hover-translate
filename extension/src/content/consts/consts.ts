@@ -25,6 +25,8 @@ export const DATA_ATTRIBUTES = {
   INDEX: "data-index",
   // On a word that is part of a saved word/phrase: that saved text (lower case).
   // On <html> while the captions are kept where they are (styles.css).
+  // On a word: the video's time (seconds) when the word first appeared on screen.
+  TIME: "data-ht-time",
   FIXED_CAPTIONS: "data-ht-fixed-captions",
   SAVED: "data-ht-saved",
   // On the same words: one value per occurrence, so neighbouring saved phrases stay apart.
