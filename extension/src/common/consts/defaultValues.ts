@@ -11,6 +11,7 @@ export const defaultSettings: Settings = {
   fixCaptionPosition: true,
   seekOnCtrlClick: true,
   seekLeadSeconds: 0.5,
+  autoCaptionLines: 2,
 };
 
 export const defaultTooltipTheme: TooltipTheme = {

@@ -136,6 +136,9 @@ export class MutationObserverService {
       });
     });
 
+    // 3. Lines YouTube rolled out of auto-generated captions, when more are wanted.
+    wordsChanged = this.subtitleCore.keepRolledOutLines(mutations) || wordsChanged;
+
     // Every window, whatever changed: a window added before its segments
     // has no words to change, and lets the pointer through until they come.
     this.subtitleCore.updateCaptionWindowPointerEvents();

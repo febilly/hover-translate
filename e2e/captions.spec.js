@@ -614,3 +614,36 @@ test("with \"keep captions in place\" off, YouTube's own position is left alone"
   });
   expect(await bottomGap(player)).toBeCloseTo(150, 0);
 });
+
+/** The lines of the caption window, from the top, as the viewer reads them. */
+const windowLines = (player) => player.frame.locator(".caption-window .caption-visual-line").allTextContents()
+  .then((lines) => lines.map((line) => line.trim()));
+
+test("more lines of auto-generated captions: the lines YouTube rolls out stay above, up to the number set", async ({ openPlayer, storage }) => {
+  await storage.updateSettings({ autoCaptionLines: 4 });
+  const player = await openPlayer();
+  await player.captions([{ lines: ["one a", "two b"] }]);
+
+  for (const word of ["three", "four", "five"]) {
+    await player.fixture("appendLine", word);
+    await player.fixture("rollUp");
+  }
+
+  // "one a" went out after "four": four lines, YouTube's two at the bottom.
+  await expect.poll(() => windowLines(player)).toEqual(["two b", "three", "four", "five"]);
+  await expect(player.frame.locator(".ht-caption-history .caption-visual-line")).toHaveCount(2);
+
+  // The kept lines are words like any other: hovered, translated.
+  await player.word("two").hover();
+  await expect(player.tooltip).toHaveText("[en] two");
+});
+
+test("YouTube's own two lines by default: nothing is kept", async ({ openPlayer }) => {
+  const player = await openPlayer();
+  await player.captions([{ lines: ["one a", "two b"] }]);
+  await player.fixture("appendLine", "three");
+  await player.fixture("rollUp");
+
+  await expect.poll(() => windowLines(player)).toEqual(["two b", "three"]);
+  await expect(player.frame.locator(".ht-caption-history")).toHaveCount(0);
+});

@@ -64,6 +64,11 @@
     "seekLeadSeconds": {
       "label": "Zacznij wcześniej o (sekundy)",
       "helperText": "Zacznij tyle przed słowem, aby jego dźwięk nie został ucięty"
+    },
+    "autoCaptionLines": {
+      "label": "Wiersze napisów automatycznych",
+      "tooltip": "Pokazuj więcej wierszy napisów automatycznych: wiersze, które YouTube przewija, zostają u góry",
+      "youtubeDefault": "2 (domyślnie w YouTube)"
     }
   },
   "modals": {

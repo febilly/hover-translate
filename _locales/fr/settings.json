@@ -64,6 +64,11 @@
     "seekLeadSeconds": {
       "label": "Démarrer plus tôt de (secondes)",
       "helperText": "Démarrer ce temps avant le mot pour que le son ne soit pas coupé"
+    },
+    "autoCaptionLines": {
+      "label": "Lignes des sous-titres automatiques",
+      "tooltip": "Afficher plus de lignes de sous-titres automatiques : les lignes que YouTube fait défiler restent au-dessus",
+      "youtubeDefault": "2 (par défaut sur YouTube)"
     }
   },
   "modals": {

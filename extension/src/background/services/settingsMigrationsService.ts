@@ -64,6 +64,10 @@ export class SettingsMigrationsService {
       seekOnCtrlClick: oldSettings.seekOnCtrlClick ?? true,
       seekLeadSeconds: oldSettings.seekLeadSeconds ?? 0.5,
     }),
+    7: (oldSettings) => ({
+      ...oldSettings,
+      autoCaptionLines: oldSettings.autoCaptionLines ?? 2,
+    }),
   };
 
   /*
@@ -110,6 +114,7 @@ export class SettingsMigrationsService {
    * carrying that field will be read as the version below it.
    */
   public inferVersion(settings: Settings): number {
+    if (settings.autoCaptionLines !== undefined) return 7;
     if (settings.seekOnCtrlClick !== undefined) return 6;
     if (settings.fixCaptionPosition !== undefined) return 5;
     if (settings.leftClickAction !== undefined) return 4;

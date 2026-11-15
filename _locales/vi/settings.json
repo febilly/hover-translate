@@ -64,6 +64,11 @@
     "seekLeadSeconds": {
       "label": "Bắt đầu sớm hơn (giây)",
       "helperText": "Bắt đầu sớm hơn từ này chừng đó để âm thanh của từ không bị cắt"
+    },
+    "autoCaptionLines": {
+      "label": "Số dòng phụ đề tự động",
+      "tooltip": "Hiện nhiều dòng phụ đề tự động hơn: các dòng YouTube cuộn đi vẫn ở phía trên",
+      "youtubeDefault": "2 (mặc định của YouTube)"
     }
   },
   "modals": {

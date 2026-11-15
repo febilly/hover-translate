@@ -15,6 +15,8 @@ export interface Settings {
   seekOnCtrlClick: boolean;
   /** Seconds before that moment to start from, so the word is not cut off. */
   seekLeadSeconds: number;
+  /** How many lines of auto-generated captions to show; YouTube's own is 2, more keeps the lines it rolls out. */
+  autoCaptionLines: number;
 }
 
 export interface TooltipTheme {

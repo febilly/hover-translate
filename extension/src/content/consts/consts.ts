@@ -7,6 +7,8 @@ export const TOOLTIP_SELECTED_WORD_CLASS = "custom-tooltip-word-selected";
 export const TOOLTIP_CHAR_CLASS = "custom-tooltip-char";
 export const TOOLTIP_SELECTED_CHAR_CLASS = "custom-tooltip-char-selected";
 export const TOOLTIP_SAVED_WORD_CLASS = "custom-tooltip-word-saved";
+// Our block above the lines of auto-generated captions, holding the ones YouTube rolled out.
+export const CAPTION_HISTORY_CLASS = "ht-caption-history";
 export const RATING_CARD_CLASS = "custom-rating-card";
 
 // YouTube classes

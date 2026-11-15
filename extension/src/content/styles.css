@@ -84,3 +84,8 @@ html[data-ht-fixed-captions] .caption-window.ytp-caption-window-bottom:not([styl
     margin-bottom: 0 !important;
     transition: none !important;
 }
+
+/* Lines of auto-generated captions YouTube rolled out, kept above its own (subtitleCore.ts). */
+.ht-caption-history {
+    display: block;
+}

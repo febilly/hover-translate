@@ -64,6 +64,11 @@
     "seekLeadSeconds": {
       "label": "Mulai lebih awal (detik)",
       "helperText": "Mulai selama ini sebelum kata agar suaranya tidak terpotong"
+    },
+    "autoCaptionLines": {
+      "label": "Baris teks otomatis",
+      "tooltip": "Tampilkan lebih banyak baris teks otomatis: baris yang digulir YouTube tetap di atas",
+      "youtubeDefault": "2 (bawaan YouTube)"
     }
   },
   "modals": {

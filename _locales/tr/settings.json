@@ -64,6 +64,11 @@
     "seekLeadSeconds": {
       "label": "Daha erken başlat (saniye)",
       "helperText": "Kelimenin sesi kesilmesin diye bu kadar önceden başlat"
+    },
+    "autoCaptionLines": {
+      "label": "Otomatik altyazı satır sayısı",
+      "tooltip": "Otomatik altyazıların daha fazla satırını göster: YouTube'un kaydırdığı satırlar üstte kalır",
+      "youtubeDefault": "2 (YouTube varsayılanı)"
     }
   },
   "modals": {

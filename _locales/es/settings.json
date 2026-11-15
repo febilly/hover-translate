@@ -64,6 +64,11 @@
     "seekLeadSeconds": {
       "label": "Empezar antes (segundos)",
       "helperText": "Empezar este tiempo antes de la palabra para que su sonido no se corte"
+    },
+    "autoCaptionLines": {
+      "label": "Líneas de subtítulos automáticos",
+      "tooltip": "Mostrar más líneas de subtítulos automáticos: las líneas que YouTube retira se quedan arriba",
+      "youtubeDefault": "2 (lo de YouTube)"
     }
   },
   "modals": {

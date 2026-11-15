@@ -64,6 +64,11 @@
     "seekLeadSeconds": {
       "label": "Früher starten um (Sekunden)",
       "helperText": "So viel früher vor dem Wort starten, damit sein Ton nicht abgeschnitten wird"
+    },
+    "autoCaptionLines": {
+      "label": "Zeilen automatischer Untertitel",
+      "tooltip": "Mehr Zeilen automatischer Untertitel anzeigen: Zeilen, die YouTube hinausschiebt, bleiben darüber stehen",
+      "youtubeDefault": "2 (YouTube-Standard)"
     }
   },
   "modals": {

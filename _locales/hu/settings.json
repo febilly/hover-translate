@@ -64,6 +64,11 @@
     "seekLeadSeconds": {
       "label": "Korábbi indulás (másodperc)",
       "helperText": "Ennyivel a szó előtt indul, hogy a hangja ne vágódjon le"
+    },
+    "autoCaptionLines": {
+      "label": "Automatikus feliratsorok",
+      "tooltip": "Több automatikus feliratsor megjelenítése: a YouTube által kigördített sorok felül maradnak",
+      "youtubeDefault": "2 (YouTube alapértelmezés)"
     }
   },
   "modals": {

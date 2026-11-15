@@ -15,7 +15,7 @@ const UNINSTALL_PAGE_URL = "https://hovertranslate.app/uninstall/";
 const WELCOME_PAGE = "popup/dist/welcome.html";
 
 export class SettingsService {
-  static readonly SETTINGS_VERSION = 6;
+  static readonly SETTINGS_VERSION = 7;
   static readonly TOOLTIP_THEME_VERSION = 1;
 
   constructor(

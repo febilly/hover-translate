@@ -12,6 +12,7 @@ export interface SettingsFormValues {
   fixCaptionPosition: boolean;
   seekOnCtrlClick: boolean;
   seekLeadSeconds: number;
+  autoCaptionLines: number;
 }
 
 export interface Language {

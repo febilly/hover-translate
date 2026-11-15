@@ -64,6 +64,11 @@
     "seekLeadSeconds": {
       "label": "Start earlier by (seconds)",
       "helperText": "Start this long before the word so its sound is not cut off"
+    },
+    "autoCaptionLines": {
+      "label": "Lines of auto-generated captions",
+      "tooltip": "Keep more lines of auto-generated captions on screen: the lines YouTube rolls out stay above",
+      "youtubeDefault": "2 (YouTube's own)"
     }
   },
   "modals": {

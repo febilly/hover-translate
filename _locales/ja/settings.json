@@ -64,6 +64,11 @@
     "seekLeadSeconds": {
       "label": "早めに開始する（秒）",
       "helperText": "単語の音が途切れないよう、この秒数だけ手前から再生します"
+    },
+    "autoCaptionLines": {
+      "label": "自動字幕の行数",
+      "tooltip": "自動生成字幕をより多くの行で表示します。YouTube が流した行は上に残ります",
+      "youtubeDefault": "2（YouTube の既定）"
     }
   },
   "modals": {

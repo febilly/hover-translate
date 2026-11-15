@@ -26,6 +26,11 @@
     "seekLeadSeconds": {
       "label": "Aloita aikaisemmin (sekuntia)",
       "helperText": "Aloita näin paljon ennen sanaa, jotta sen ääni ei katkea"
+    },
+    "autoCaptionLines": {
+      "label": "Automaattitekstityksen rivit",
+      "tooltip": "Näytä enemmän automaattitekstityksen rivejä: rivit, jotka YouTube vierittää pois, jäävät yläpuolelle",
+      "youtubeDefault": "2 (YouTuben oletus)"
     }
   },
   "modals": {

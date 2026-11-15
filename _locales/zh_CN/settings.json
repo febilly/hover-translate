@@ -35,6 +35,11 @@
     "seekLeadSeconds": {
       "label": "提前开始（秒）",
       "helperText": "比该词提前这么久开始播放，避免词的声音被截断"
+    },
+    "autoCaptionLines": {
+      "label": "自动字幕行数",
+      "tooltip": "让自动生成的字幕多显示几行：YouTube 滚出的行会保留在上方",
+      "youtubeDefault": "2（YouTube 默认）"
     }
   },
   "modals": {

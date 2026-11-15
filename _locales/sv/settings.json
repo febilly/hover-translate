@@ -64,6 +64,11 @@
     "seekLeadSeconds": {
       "label": "Starta tidigare med (sekunder)",
       "helperText": "Starta så här långt före ordet så att ljudet inte klipps av"
+    },
+    "autoCaptionLines": {
+      "label": "Rader med automatiska undertexter",
+      "tooltip": "Visa fler rader automatiska undertexter: raderna som YouTube rullar bort ligger kvar ovanför",
+      "youtubeDefault": "2 (YouTubes standard)"
     }
   },
   "modals": {

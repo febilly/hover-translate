@@ -120,9 +120,11 @@
     // did both at once or one right after the other).
     rollUp(grown = "") {
       const text = lastWindow().querySelector(".captions-text");
-      const kept = Array.from(text.querySelectorAll(".caption-visual-line")).slice(1).map((line) => line.textContent.trim());
+      // YouTube's own lines only, the children of `.captions-text`: it keeps
+      // track of the nodes it made and leaves anything else there alone.
+      const kept = Array.from(text.querySelectorAll(":scope > .caption-visual-line")).slice(1).map((line) => line.textContent.trim());
       kept[kept.length - 1] += grown;
-      text.querySelectorAll(".caption-visual-line").forEach((line) => line.remove());
+      text.querySelectorAll(":scope > .caption-visual-line").forEach((line) => line.remove());
       kept.forEach((lineText) => {
         const [first, ...rest] = lineText.split(/\s+/);
         const line = visualLine(first);

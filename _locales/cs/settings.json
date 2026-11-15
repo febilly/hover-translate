@@ -26,6 +26,11 @@
     "seekLeadSeconds": {
       "label": "Začít dříve o (sekundy)",
       "helperText": "Začít o tolik dříve před slovem, aby se jeho zvuk neuřízl"
+    },
+    "autoCaptionLines": {
+      "label": "Řádky automatických titulků",
+      "tooltip": "Zobrazit více řádků automatických titulků: řádky, které YouTube odroluje, zůstanou nahoře",
+      "youtubeDefault": "2 (výchozí YouTube)"
     }
   },
   "modals": {

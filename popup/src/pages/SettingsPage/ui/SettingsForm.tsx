@@ -167,6 +167,11 @@ export const SettingsForm: FC<SettingsFormProps> = ({
         : undefined,
     })), [apiKeys, t]);
 
+  const autoCaptionLinesOptions: MenuItemType[] = [2, 3, 4, 5, 6].map((lines) => ({
+    value: String(lines),
+    label: lines === 2 ? t("fields.autoCaptionLines.youtubeDefault") : String(lines),
+  }));
+
   const leftClickActionOptions: MenuItemType<LeftClickAction>[]  = [
     { value: "save-to-dictionary", label: t("fields.leftClickAction.options.saveToDictionary") },
     { value: "copy-original", label: t("fields.leftClickAction.options.copyOriginal") },
@@ -661,6 +666,23 @@ export const SettingsForm: FC<SettingsFormProps> = ({
                 {t("fields.fixCaptionPosition.helperText")}
               </FormHelperText>
             </FormControl>
+          )}
+        />
+        <Controller
+          name="autoCaptionLines"
+          control={control}
+          render={({ field }) => (
+            <SettingsSelect
+              id="autoCaptionLines"
+              label={t("fields.autoCaptionLines.label")}
+              tooltip={t("fields.autoCaptionLines.tooltip")}
+              value={String(field.value ?? 2)}
+              onChange={(value) => {
+                setValue("autoCaptionLines", Number(value), { shouldDirty: true });
+                handleSubmit(onSubmit)();
+              }}
+              options={autoCaptionLinesOptions}
+            />
           )}
         />
         <Controller

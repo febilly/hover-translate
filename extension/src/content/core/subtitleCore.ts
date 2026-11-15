@@ -1,4 +1,4 @@
-import { TOOLTIP_WORD_CLASS, TOOLTIP_SAVED_WORD_CLASS, CAPTION_SEGMENT, CAPTION_WINDOW, DATA_ATTRIBUTES } from "../consts/consts.ts";
+import { TOOLTIP_WORD_CLASS, TOOLTIP_SAVED_WORD_CLASS, CAPTION_SEGMENT, CAPTION_WINDOW, CAPTION_VISUAL_LINE, CAPTION_HISTORY_CLASS, DATA_ATTRIBUTES } from "../consts/consts.ts";
 import { TooltipService } from "../services/tooltipService.ts";
 import { state } from "../state/stateManager.ts";
 import { CaptionWord, renderWord, splitIntoWords } from "../utils/wordSegmenter.ts";
@@ -20,6 +20,9 @@ export class SubtitleCore {
    * translation still loading for it survive.
    */
   private readonly parsedSegments = new WeakMap<HTMLElement, CaptionWord[]>();
+
+  /** Lines we took out of the history ourselves: their removal is not YouTube's. */
+  private readonly droppedLines = new WeakSet<Node>();
 
   constructor(
     private readonly tooltipService: TooltipService
@@ -311,6 +314,69 @@ export class SubtitleCore {
     });
 
     return wordSpan;
+  }
+
+  /**
+   * More lines of auto-generated captions than YouTube's two
+   * (`autoCaptionLines`). Rolling up, YouTube removes every line of the window
+   * and adds back the ones that stay, which take over the words of the removed
+   * ones; a removed line that still has its words is the one that went. It is
+   * put back above YouTube's own lines, in a block of ours, and the oldest ones
+   * go once the window holds more lines than set. YouTube only removes the
+   * lines it made: should it ever take our block too, it is put back.
+   *
+   * Returns whether words came or went, so that they are indexed again.
+   */
+  public keepRolledOutLines(mutations: MutationRecord[]): boolean {
+    const maxLines = state.settings.autoCaptionLines ?? 2;
+    if (maxLines <= 2 && !document.querySelector(`.${CAPTION_HISTORY_CLASS}`)) return false;
+
+    let changed = false;
+
+    mutations.forEach(({ target, removedNodes }) => {
+      if (!(target instanceof HTMLElement) || !target.isConnected || !target.closest(`.${CAPTION_WINDOW}`)) return;
+      if (target.classList.contains(CAPTION_HISTORY_CLASS)) return;
+
+      removedNodes.forEach((node) => {
+        if (!(node instanceof HTMLElement) || this.droppedLines.has(node)) return;
+
+        if (node.classList.contains(CAPTION_HISTORY_CLASS)) {
+          target.prepend(node);
+          changed = true;
+        } else if (node.classList.contains(CAPTION_VISUAL_LINE) && node.querySelector(`.${TOOLTIP_WORD_CLASS}`)) {
+          this.getHistory(target).append(node);
+          changed = true;
+        }
+      });
+    });
+
+    document.querySelectorAll<HTMLElement>(`.${CAPTION_HISTORY_CLASS}`).forEach((history) => {
+      const ownLines = history.parentElement?.querySelectorAll(`:scope > .${CAPTION_VISUAL_LINE}`).length ?? 0;
+      const lines = Array.from(history.children);
+      const extra = lines.length - Math.max(0, maxLines - ownLines);
+
+      lines.slice(0, Math.max(0, extra)).forEach((line) => this.dropLine(line));
+      if (history.children.length === 0) this.dropLine(history);
+      changed = changed || extra > 0;
+    });
+
+    if (changed) this.updateCaptionWindowSize();
+    return changed;
+  }
+
+  private getHistory(captionsText: HTMLElement): HTMLElement {
+    const existing = captionsText.querySelector<HTMLElement>(`:scope > .${CAPTION_HISTORY_CLASS}`);
+    if (existing) return existing;
+
+    const history = document.createElement("span");
+    history.className = CAPTION_HISTORY_CLASS;
+    captionsText.prepend(history);
+    return history;
+  }
+
+  private dropLine(node: Element): void {
+    this.droppedLines.add(node);
+    node.remove();
   }
 
   /** Starts the video a little before the moment the word appeared (`seekLeadSeconds`). */

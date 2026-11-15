@@ -11,4 +11,5 @@ export const initialFormValues: SettingsFormValues = {
   fixCaptionPosition: true,
   seekOnCtrlClick: true,
   seekLeadSeconds: 0.5,
+  autoCaptionLines: 2,
 };
