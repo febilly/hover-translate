@@ -24,6 +24,18 @@ test("with the captions kept in place they sit above the seek slider, and hover 
   await expect(player.tooltip).toHaveText("бегать");
 });
 
+test("under the controls layer Shift still ends a selection on the character under the pointer", async ({ openPlayer }) => {
+  const player = await openPlayer("embed");
+  await player.captions("안녕하세요 여러분 환영합니다");
+  const selected = player.frame.locator(".custom-tooltip-word-selected, .custom-tooltip-char-selected");
+
+  await player.word("안녕하세요").hover({ force: true });
+  await player.page.keyboard.down("Shift");
+  await player.frame.locator(".custom-tooltip-char", { hasText: "러" }).hover({ force: true });
+  await expect(selected).toHaveText(["안녕하세요 ", "여", "러"]);
+  await player.page.keyboard.up("Shift");
+});
+
 test("a word under the controls layer: hover translates and pauses, leaving resumes", async ({ openPlayer }) => {
   const player = await openPlayer("embed");
   await player.captions("run for your life");

@@ -603,19 +603,24 @@ export class TooltipService {
     if (!isShiftHeld(event) && !state.settings.alwaysMultipleSelection) return;
     if (!this.selectedWordsNodes.size || this.anchorWordNode === word) return;
 
-    const charNode = (event.target as HTMLElement).closest<HTMLElement>(`.${TOOLTIP_CHAR_CLASS}`);
-    if (!charNode || !word.contains(charNode)) return;
+    const charNode = this.getCharUnderPointer(event, word);
+    if (!charNode) return;
 
     const before = this.getSelectedText();
     this.updateSelectedWords(word, charNode);
     if (this.getSelectedText() !== before) this.scheduleTranslation(word as AbortableElement);
   };
 
-  /** The character of `word` under the pointer, if it is one of a Chinese, Japanese or Korean word. */
+  /**
+   * The character of `word` under the pointer, if it is one of a Chinese,
+   * Japanese or Korean word. Every element at the point is asked, not the top
+   * one: under the embedded player's controls layer the event is handed to the
+   * word by `CoveredCaptionPointerService`, and the layer is what is on top.
+   */
   private getCharUnderPointer(event: PointerEvent, word: HTMLElement): HTMLElement | null {
-    const charNode = document.elementFromPoint(event.clientX, event.clientY)?.closest<HTMLElement>(`.${TOOLTIP_CHAR_CLASS}`);
-
-    return charNode && word.contains(charNode) ? charNode : null;
+    return document.elementsFromPoint(event.clientX, event.clientY).find(
+      (element): element is HTMLElement => element instanceof HTMLElement && element.classList.contains(TOOLTIP_CHAR_CLASS) && word.contains(element),
+    ) ?? null;
   }
 
   /** Translates the selection once the pointer has rested, at once when it is cached. */
